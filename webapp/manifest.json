@@ -1,0 +1,78 @@
+{
+	"_version": "1.1.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "customer.report.incident",
+		"type": "application",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{Report Incident}}",
+		"sourceTemplate": {
+			"id": "generator-extensibilty-sub",
+			"version": "1.0.0"
+		},
+		"i18n": "i18n/i18n.properties"
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"icons": {
+			"icon": "sap-icon://detail-view",
+			"favIcon": ""
+		},
+		"deviceTypes": {
+			"desktop": false,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_bluecrystal",
+			"sap_belize"
+		]
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"dependencies": {
+			"minUI5Version": "1.114.1"
+		},
+		"extends": {
+			"component": "ehs.inc.reportincidents1",
+			"extensions": {
+				"sap.ui.viewExtensions": {
+					"ehs.inc.reportincidents1.view.CreateIncident": {
+						"CustomerExtensionForIncidentDescriptionOfEvenets": {
+							"className": "sap.ui.core.Fragment",
+							"fragmentName": "customer.report.incident.view.CreateIncident_CustomerExtensionForIncidentDescriptionOfEvenetsCustom",
+							"type": "XML"
+						}
+					}
+				},
+				"sap.ui.viewReplacements": {
+					"ehs.inc.reportincidents1.view.CreateIncident": {
+						"viewName": "customer.report.incident.view.CreateIncidentCustom",
+						"type": "XML"
+					}
+				},
+				"sap.ui.controllerExtensions": {
+					"ehs.inc.reportincidents1.controller.CreateIncident": {
+						"controllerName": "customer.report.incident.controller.CreateIncidentCustom"
+					}
+				}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "customer.report.incident.i18n.i18n"
+				}
+			}
+		}
+	}
+}

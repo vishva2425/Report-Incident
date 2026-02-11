@@ -1,0 +1,46 @@
+{
+  "type": "abaprep",
+  "BSPName": "REPINCIDENTS1",
+  "component": "REPINCIDENTS1%2fComponent.js",
+  "manifest": "REPINCIDENTS1%2fmanifest.json",
+  "versionJsonPath": "REPINCIDENTS1%2fversion.json",
+  "controllers": {
+    "App": "REPINCIDENTS1%2fcontroller%2fApp.controller.js",
+    "CreateIncident": "REPINCIDENTS1%2fcontroller%2fCreateIncident.controller.js",
+    "Detail": "REPINCIDENTS1%2fcontroller%2fDetail.controller.js",
+    "Master": "REPINCIDENTS1%2fcontroller%2fMaster.controller.js"
+  },
+  "views": {
+    "App": "REPINCIDENTS1%2fview%2fApp.view.xml",
+    "CreateIncident": "REPINCIDENTS1%2fview%2fCreateIncident.view.xml",
+    "Detail": "REPINCIDENTS1%2fview%2fDetail.view.xml",
+    "DetailNoObjectsAvailable": "REPINCIDENTS1%2fview%2fDetailNoObjectsAvailable.view.xml",
+    "DetailObjectNotFound": "REPINCIDENTS1%2fview%2fDetailObjectNotFound.view.xml",
+    "Master": "REPINCIDENTS1%2fview%2fMaster.view.xml",
+    "NotFound": "REPINCIDENTS1%2fview%2fNotFound.view.xml"
+  },
+  "fragments": {
+    "ViewSettingsDialog": "REPINCIDENTS1%2fview%2fViewSettingsDialog.fragment.xml",
+    "AppSettings": "REPINCIDENTS1%2fview%2ffragments%2fAppSettings.fragment.xml",
+    "CameraSettings": "REPINCIDENTS1%2fview%2ffragments%2fCameraSettings.fragment.xml",
+    "CurrentPositionWarningDialog": "REPINCIDENTS1%2fview%2ffragments%2fCurrentPositionWarningDialog.fragment.xml",
+    "LocationSelectionDialog": "REPINCIDENTS1%2fview%2ffragments%2fLocationSelectionDialog.fragment.xml",
+    "NewIncidentPopover": "REPINCIDENTS1%2fview%2ffragments%2fNewIncidentPopover.fragment.xml",
+    "PictureDialog": "REPINCIDENTS1%2fview%2ffragments%2fPictureDialog.fragment.xml",
+    "UOMValueHelpDialog": "REPINCIDENTS1%2fview%2ffragments%2fUOMValueHelpDialog.fragment.xml"
+  },
+  "system": {
+    "name": "Booking-Ticket",
+    "proxyUrlPrefix": "/destinations/Booking-Ticket",
+    "path": "/sap/bc/adt",
+    "url": "/destinations/Booking-Ticket/sap/bc/adt",
+    "wattUsage": "odata_abap,dev_abap",
+    "entryPath": "/sap/bc/adt",
+    "additionalData": []
+  },
+  "minUI5Version": "1.114.1",
+  "namespace": "ehs.inc.reportincidents1",
+  "parentResourceRootUrl": "/destinations/Booking-Ticket/sap/bc/ui5_ui5/sap/REPINCIDENTS1",
+  "resourceBundle": "i18n/i18n.properties",
+  "shouldLinkComponentToManifest": true
+}

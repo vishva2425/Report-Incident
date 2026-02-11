@@ -1,0 +1,37 @@
+specVersion: "2.6"
+metadata:
+  name: customer.report.incident
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - path: /sap
+            url: http://vvhcals4hci:50000/
+            client: "100"
+            destination: Booking-Ticket
+          - path: /resources/ehs/fnd/task/reuselib
+            destination: Booking-Ticket
+            url: http://vvhcals4hci:50000/
+            client: "100"
+            pathPrefix: /sap/bc/ui5_ui5/sap/ehstask_libs1
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: "1.120.0"
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: customer.report.incident
+        ui5Theme: sap_fiori_3        

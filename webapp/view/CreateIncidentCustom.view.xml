@@ -1,0 +1,1002 @@
+<!--
+
+    Copyright (C) 2009-2023 SAP SE or an SAP affiliate company. All rights reserved.
+
+-->
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout" xmlns:unified="sap.ui.unified" xmlns="sap.m"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	controllerName="ehs.inc.reportincidents1.controller.CreateIncident">
+	<semantic:DetailPage id="createIncidentPage" navButtonPress="onCancel" showNavButton="{device>/system/phone}"
+		title="{createView>/viewTitle}">
+		<semantic:content>
+			<layout:VerticalLayout id="idVerticalLayoutNewIncidentForm" class="sapUiResponsiveContentPadding" width="100%">
+				<layout:content>
+					<form:SimpleForm id="newIncidentForm" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+						labelSpanL="3" emptySpanL="4" title="{= ${appView>/sScreenSize} === 'Phone' ? '' : ${path: 'i18n>incidentInformationFormTitle'}}"
+						width="100%">
+						<form:content>
+							<!--What has happened-->
+							<Label id="idLabelWhatHappened" labelFor="idWhatHappened" required="true" text="{i18n>incidentDescription}"/>
+							<TextArea id="idWhatHappened" placeholder="{i18n>descrEventInput}" value="{IncidentDescriptionOfEvents}"
+								app:mandatoryErrorMessage="{i18n>noIncidentDescription}" width="100%"/>
+							<!-- Extension point for adding information in the incident with regard to what happened. -->
+							<core:ExtensionPoint name="CustomerExtensionForIncidentDescriptionOfEvenets"/>
+							<!--Pictures-->
+							<FlexBox id="idPictureFlexBox" alignItems="Center" justifyContent="Start">
+								<layoutData>
+									<layout:GridData id="idGridDataAddImage" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<items>
+									<Button id="idButtonAddImage" icon="sap-icon://add-photo" press="onAddCordovaPicture" visible="{= ${appView>/bIsOfflineEnabled}}"
+										enabled="{= ${appView>/data/iNumberOfPictures} &lt; ${constants>/MODEL/ODATA/MAX_NUMBER_OF_PICTURES}}" tooltip="{i18n>addPictureTooltip}"
+										class="sapUiSmallMarginEnd"/>
+									<unified:FileUploader id="idFileUploaderImage" maximumFileSize="15" buttonOnly="true" visible="{= !${appView>/bIsOfflineEnabled}}"
+										enabled="{= ${appView>/data/iNumberOfPictures} &lt; ${constants>/MODEL/ODATA/MAX_NUMBER_OF_PICTURES}}" change="onAddFileUploaderPicture"
+										icon="sap-icon://add-photo" tooltip="{i18n>addPictureTooltip}" iconOnly="true" multiple="true" typeMissmatch="handleTypeMissmatch"
+										fileType="png,jpg,gif,jpeg" class="sapUiSmallMarginEnd"/>
+									<layout:HorizontalLayout allowWrapping="true" content="{appView>/data/aPictures}" id="imagesLayout">
+										<layout:content>
+											<Image id="idImage" class="sapUiSmallMarginEnd" press="onPressPicture" height="3em" src="{appView>source}" alt="{i18n>pictureAltText}"/>
+										</layout:content>
+									</layout:HorizontalLayout>
+								</items>
+							</FlexBox>
+							<!-- Extension point for pictures section. -->
+							<core:ExtensionPoint name="CustomerExtensionForPictures"/>
+							<!--When did it happen-->
+							<Label id="idLabelDateTimePicker" labelFor="idDateTimePicker" required="true" text="{i18n>incidentDate}"/>
+							<DateTimePicker id="idDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
+							<!-- Extension point for adding information about incident date. -->
+							<core:ExtensionPoint name="CustomerExtensionForWhenIncidentHappened"/>
+							<!--Where did it happen-->
+							<Label id="idLabelIncidentLocation" labelFor="idIncidentLocation" text="{i18n>incidentLocation}"/>
+							<Input id="idIncidentLocation" placeholder="{i18n>locInputPlaceholder}" showValueHelp="true" value="{appView>/data/sLocationName}"
+								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
+								filterSuggests="false">
+								<suggestionColumns>
+									<Column id="idColumnIncidentLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelIncidentLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
+									</Column>
+									<Column id="idColumnIncidentLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelIncidentLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
+									</Column>
+									<Column id="idColumnIncidentLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelIncidentLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
+									</Column>
+								</suggestionColumns>
+							</Input>
+							<Input id="LocationDescription" placeholder="{i18n>exactLocInput}" value="{IncidentLocationDescription}">
+								<layoutData>
+									<layout:GridData id="idGridDataLocationDescription" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+							</Input>
+							<Label id="GeoLocationLabel" text="{i18n>geoLocation}" labelFor="releaseGEO"/>
+							<RadioButtonGroup id="GeoLocationRadioButton" selectedIndex="1" ariaLabelledBy="GeoLocationLabel" visible="false" columns="2">
+								<buttons>
+									<RadioButton id="GeoLocationRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="GeoLocationLabel"/>
+									<RadioButton id="GeoLocationRadioButtonNo" text="{i18n>no}" ariaLabelledBy="GeoLocationLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<!-- Extension point for adding location information in the incident. -->
+							<core:ExtensionPoint name="CustomerExtensionForIncidentLocation"/>
+							<!--Has anyone been injured-->
+							<Label id="personRadioButtonLabel" text="{path: 'IncidentCategory', formatter: '.formatter.formatPersonQuestion'}"
+								required="{appView>/data/bIsPersonInvolved}" labelFor="personsContainer"/>
+							<RadioButtonGroup id="personRadioButton" ariaLabelledBy="personRadioButtonLabel" columns="2" select="onSelectPersonRadioButton">
+								<buttons>
+									<RadioButton id="personRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="personRadioButtonLabel"/>
+									<RadioButton id="personRadioButtonNo" text="{i18n>no}" ariaLabelledBy="personRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<VBox id="personsContainer" visible="{appView>/data/bIsPersonInvolved}" fieldGroupIds="personInputFilterGroup">
+								<layoutData>
+									<layout:GridData id="idGridDataPersonAdditional" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<FlexBox id="personInputContainer" fieldGroupIds="personInputContainerGroup">
+									<Input id="personInput" placeholder="{i18n>personInput}" fieldGroupIds="personInputFilterGroup" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{path: 'createView>/incidentCategory', formatter: '.formatter.formatPersonError'}"
+										app:mandatoryErrorDescription="{path: 'createView>/incidentCategory', formatter: '.formatter.formatPersonErrorLong'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataPerson" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentPersonNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentPersonNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentPersonWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentPersonWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForInjuredPerson" press="_onDeletePersonInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<FlexBox id="injuredPersonAddAnother">
+									<Button id="addInputForInjuredPerson" text="{path: 'createView>/incidentCategory', formatter: '.formatter.formatAddPersonButtonText'}"
+										press="onAddInputForPerson"/>
+								</FlexBox>
+							</VBox>
+							<!--Are there any witnesses-->
+							<Label id="witnessRadioButtonLabel" text="{i18n>incidentWitness}" required="{appView>/data/bIsThereWitness}" labelFor="witnessesContainer"/>
+							<RadioButtonGroup id="witnessRadioButton" visible="{=${IncidentCategory}!==${constants>/MODEL/ODATA/INC_CAT_SAFE_OBS}}"
+								ariaLabelledBy="witnessRadioButtonLabel" columns="2" select="onSelectPersonRadioButton">
+								<buttons>
+									<RadioButton id="witnessRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="witnessRadioButtonLabel"/>
+									<RadioButton id="witnessRadioButtonNo" text="{i18n>no}" ariaLabelledBy="witnessRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<VBox id="witnessesContainer" visible="{appView>/data/bIsThereWitness}" fieldGroupIds="witnessInputFilterGroup">
+								<layoutData>
+									<layout:GridData id="idGridDataWitnessAdditional" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<FlexBox id="witnessInputContainer" fieldGroupIds="witnessInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="witnessInput" fieldGroupIds="witnessInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>witnessRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>witnessRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataWitness" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentWitnessNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentWitnessNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentWitnessWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentWitnessWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForWitness" press="_onDeleteWitnessInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForWitness"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>witnessRole'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
+							<!-- Extension point for adding information about persons involved in incident. -->
+							<core:ExtensionPoint name="CustomerExtensionForInvolvedPersons"/>
+							<!--Has anything been damaged-->
+							<Label id="assetRadioButtonLabel" text="{i18n>damagedAsset}" required="{appView>/data/bIsAssetInvolved}" labelFor="assetInput"/>
+							<RadioButtonGroup id="assetRadioButton" ariaLabelledBy="assetRadioButtonLabel"
+								visible="{parts: [{path: 'IncidentCategory'},{path: 'constants>/MODEL/ODATA/INC_CAT_INC'}], formatter: '.formatter.hideSection'}"
+								columns="2" select="onSelectAssetRadioButton">
+								<buttons>
+									<RadioButton id="assetRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="assetRadioButtonLabel"/>
+									<RadioButton id="assetRadioButtonNo" text="{i18n>no}" ariaLabelledBy="assetRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<!-- Extension point for adding information about damaged equipment. -->
+							<core:ExtensionPoint name="CustomerExtensionForDamagedEquipment"/>
+							<Input id="assetInput" placeholder="{i18n>assetInput}" maxLength="40" value="{AssetInvolvedName}"
+								app:mandatoryErrorMessage="{i18n>noEquipmentName}" app:mandatoryErrorDescription="{i18n>noEquipmentNameLong}"
+								visible="{appView>/data/bIsAssetInvolved}">
+								<layoutData>
+									<layout:GridData id="idGridDataAsset" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+							</Input>
+							<!--Has anything been released-->
+							<Label id="releaseRadioButtonLabel" text="{i18n>releasedChemicals}" labelFor="releaseRadioButton"/>
+							<RadioButtonGroup id="releaseRadioButton" ariaLabelledBy="releaseRadioButtonLabel"
+								visible="{parts: [{path: 'IncidentCategory'},{path: 'constants>/MODEL/ODATA/INC_CAT_INC'}], formatter: '.formatter.hideSection'}"
+								columns="2" select="onSelectReleaseRadioButton">
+								<buttons>
+									<RadioButton id="releaseRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="releaseRadioButtonLabel"/>
+									<RadioButton id="releaseRadioButtonNo" text="{i18n>no}" ariaLabelledBy="releaseRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<!-- Extension point for adding information about damaged equipment. -->
+							<core:ExtensionPoint name="CustomerExtensionForReleases"/>
+							<VBox id="releaseContainer" visible="{appView>/data/bIsReleaseInvolved}">
+								<layoutData>
+									<layout:GridData id="idGridDataRelease" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<Label id="releaseTypeLabel" text="{i18n>releaseType}" labelFor="releaseType"/>
+								<Select id="releaseType" selectedKey="{ReleaseType}" forceSelection="false" items="{path: '/ReleaseTypes',sorter: { path: 'Description' }}">
+									<core:Item id="idItemReleaseType" key="{Code}" text="{Description}"/>
+								</Select>
+								<Label id="releaseChemicalLabel" text="{i18n>releaseChemical}" required="{appView>/data/bIsReleaseInvolved}" labelFor="releaseChemical"/>
+								<Input id="releaseChemical" placeholder="{i18n>releaseChemicalPhd}" maxLength="40" value="{MaterialDesc}"
+									app:mandatoryErrorMessage="{i18n>noMaterialName}" app:mandatoryErrorDescription="{i18n>noMaterialNameLong}"/>
+								<Label id="releaseAmountLabel" text="{i18n>releaseAmount}" labelFor="releaseChemical"/>
+								<Input id="releaseAmount" placeholder="{i18n>releaseAmountPhd}" maxLength="12"
+									value="{ path: 'MaterialRelQuan', type: 'sap.ui.model.odata.type.Decimal', constraints: { precision: 12, minimum: '0', minimumExclusive: true, scale: 'variable' } }"/>
+								<Label id="releaseUOMDescLabel" text="{i18n>releaseUOM}" labelFor="releaseUOM"/>
+								<Input id="releaseUOM" placeholder="{i18n>releaseUOMPhd}" maxLength="60" value="{appView>/data/sUOMDescription}" showValueHelp="true"
+									valueHelpOnly="true" valueHelpRequest="onUOMValueHelp" app:mandatoryErrorMessage="{i18n>noUOMName}"
+									app:mandatoryErrorDescription="{i18n>noUOMNameLong}"/>
+							</VBox>
+							<!--Are there any groups-->
+							<Label id="groupsRadioButtonLabel" text="{path: 'IncidentCategory', formatter: '.formatter.formatGroupsQuestion'}"
+								required="{appView>/data/bIsGroupsInvolved}" labelFor="mcGroup"/>
+							<RadioButtonGroup id="groupsRadioButton" ariaLabelledBy="releaseRadioButtonLabel"
+								visible="{=${IncidentCategory}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" columns="2" select="onSelectGroupRadioButton">
+								<buttons>
+									<RadioButton id="groupRadioButtonYes" class="sapUiMediumMarginEnd" text="{i18n>yes}" ariaLabelledBy="releaseRadioButtonLabel"/>
+									<RadioButton id="groupRadioButtonNo" text="{i18n>no}" ariaLabelledBy="releaseRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							<!-- <VBox id="groupContainer" visible="{appView>/data/bIsGroupsInvolved}">
+								<layoutData>
+									<layout:GridData id="idGridDataGroups" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<MultiComboBox id="mcGroup" app:mandatoryErrorMessage="{i18n>noGroupsSelected}" app:mandatoryErrorDescription="{i18n>noGroupsSelectedLong}"
+									placeholder="{i18n>selectCircumstances}" items="{ path: '/I_IncidentGroupUnion'}">
+									<core:Item id="idItemIncidentGroupCode" key="{IncidentGroupCode}" text="{IncidentGroupCode_Text}"/>
+								</MultiComboBox>
+							</VBox>
+							<Label id="estRiskTypeLabel" text="{i18n>estimatedRisk}" labelFor="estRiskType"/>
+							<ComboBox id="estRiskType" placeholder="{i18n>selectEstRisk}" items="{path: '/EstRiskTypes',sorter: { path: 'Description' }}"
+								visible="{appView>/data/bIsGroupsInvolved}" change="onChangeEstRiskType">
+								<core:Item id="idItemEstRiskType" key="{Code}" text="{Description}"/>
+							</ComboBox> -->
+							
+							<!-- Extension point for adding new sections in the Report Incident view. -->
+							<core:ExtensionPoint name="CustomerExtensionForCreateIncident"/>
+
+							<!-- Classification  -->
+							<!-- <Label id="classification" text="Classification"
+								required="true" labelFor="mcGroup"/>
+							<RadioButtonGroup id="classificationRadioButton" ariaLabelledBy="classificationRadioButton"
+								visible="{=${Classification}!==${constants>/MODEL/ODATA/INC_CAT_INC}}"  columns="4" select="onSelectGroupRadioButton">
+								<buttons>
+									<RadioButton id="GOR" class="sapUiMediumMarginEnd" text="GOR" ariaLabelledBy="classificationRadioButton"/>
+									<RadioButton id="HSR" class="sapUiMediumMarginEnd" text="HSR" ariaLabelledBy="classificationRadioButton"/>
+									<RadioButton id="DGOR" class="sapUiMediumMarginEnd" text="DGOR" ariaLabelledBy="classificationRadioButton"/>
+									<RadioButton id="SOR" class="sapUiMediumMarginEnd" text="SOR" ariaLabelledBy="classificationRadioButton"/>
+								</buttons>
+							</RadioButtonGroup> -->
+
+							<!-- Contact Number  -->
+							<Label id="idConactNumber" labelFor="idContactNumber" text="Contact Number"/>
+							<Input id="idConatctNumber" placeholder="Enter Contact Number." value="" 
+							visible="{=${ContactNumber}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
+								app:mandatoryErrorMessage="Please Enter the Contact Number" width="100%"/>
+
+							<!-- Reporting Person -->
+							<Label id="idLabelReportingPerson" labelFor="idReportingPerson" text="Reporting Person"/>
+							<Input id="idReportingPerson" placeholder="Select Reporting Person." showValueHelp="true" value="{appView>/data/sLocationName}"
+								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
+								filterSuggests="false">
+								<suggestionColumns>
+									<Column id="idColumnReportingPersonName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelReportingPersonName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
+									</Column>
+									<Column id="idColumnReportingPersonId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelReportingPersonId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
+									</Column>
+									<Column id="idColumnReportingPersonType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelReportingPersonType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
+									</Column>
+								</suggestionColumns>
+							</Input>
+
+							<!-- Date and Time of the Incident -->
+							<!-- <Label id="idLabelDateTimeIncident" labelFor="idDateTimeIncident" text="Date and Time of the Incident"/>
+							<DateTimePicker id="idDateTimeIncident"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="Select a Date and Time of Incident."/> -->
+
+							<!-- Reported Station -->
+							<Label id="idReportedStation" labelFor="idReportedStation" text="Reported Station"/>
+							<Input id="idInpReportedStation" placeholder="Enter Reported Station." value="" 
+							visible="{=${ReportedStation}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
+								app:mandatoryErrorMessage="Please Enter the Reported Station" width="100%"/>
+
+							<!-- Location -->
+							<!-- <Label id="idLabelLocation" labelFor="idLocation" text="Location"/>
+							<Input id="idInpLocation" placeholder="Select a Location." showValueHelp="true" value="{appView>/data/sLocationName}"
+								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
+								filterSuggests="false">
+								<suggestionColumns>
+									<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
+									</Column>
+									<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
+									</Column>
+									<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
+									</Column>
+								</suggestionColumns>
+							</Input> -->
+
+							<!-- Was there any evidence -->
+							<Label id="idEvidence" labelFor="idEvidence" text="Was there any evidence"/>
+							<Input id="idInpEvidence" placeholder="Enter the Evidence Name." value="" 
+							visible="{=${Evidence}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
+								app:mandatoryErrorMessage="Please Enter the Reported Station" width="100%"/>
+
+							<!-- ================= Classification ================= -->
+							<Label text="Classification" required="true" />
+
+									<RadioButtonGroup
+										id="classificationRadioButton"
+										columns="4"
+										select="onCategoryChange"
+										selectedIndex="0">
+										<buttons>
+											<RadioButton text="GOR" />
+											<RadioButton text="HSR" />
+											<RadioButton text="DGOR" />
+											<RadioButton text="SOR" />
+										</buttons>
+									</RadioButtonGroup>
+
+									<!-- ================= Occurrence Type ================= -->
+							<Label text="Occurrence Type" required="true" />
+
+									<ComboBox
+										id="idSelOccurrenceType"
+										width="100%"
+										placeholder="Select Occurrence Type"
+										items="{ui>/dropdownItems}"
+										selectionChange="onOccurrenceTypeChange">
+
+										<core:Item
+											key="{ui>key}"
+											text="{ui>text}" />
+
+									</ComboBox>
+
+							<!-- GOR Drop Down Items -->
+
+							<!-- GSE Incident -->
+
+							<VBox id="gseIncidentSection"
+								visible="{createView>/bIsGSEIncident}">
+
+								<layoutData>
+									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- GSE Involved -->
+								<Label text="GSE Involved" required="true"/>
+								<FlexBox alignItems="Center">
+									<ComboBox id="gseInvolved"
+										placeholder="Select GSE Asset."
+										items="">
+										<core:Item key="{AssetId}" text="{AssetName}"/>
+									</ComboBox>
+									<Button text="Add Multiple Assets"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultipleAssets"/>
+								</FlexBox>
+
+								<!-- GSE Belongs To -->
+								<Label text="GSE Belongs To"/>
+								<Input placeholder="Enter Owner / Department."/>
+
+								<!-- Property Damage -->
+								<Label text="Any Property Damage"/>
+								<TextArea rows="3" width="100%"
+									placeholder="Enter property damage details."/>
+
+								<!-- Environmental Impact -->
+								<Label text="Was any material released"/>
+								<Select width="100%">
+									<core:Item key="YES" text="Yes"/>
+									<core:Item key="NO" text="No"/>
+								</Select>
+
+								<!-- Location Details -->
+								<Label text="Stand No"/>
+								<Input placeholder="Enter Stand Number."/>
+
+								<!-- Personnel -->
+								<Label text="Involved Staff"/>
+								<FlexBox alignItems="Center">
+									<MultiComboBox placeholder="Select Staff"/>
+									<Button text="Add Multiple Persons"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultiplePersons"/>
+								</FlexBox>
+
+							</VBox>
+
+							
+
+							<!-- Aircraft Damage Occurrence Involved -->
+
+							<VBox id="aircraftDamageOccurrenceSection"
+								visible="{createView>/bIsaircraftDamageOccurrence}">
+
+								<layoutData>
+									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Airline Involved -->
+								<Label text="Airline Involved"/>
+								<Input placeholder="Enter Airline Involved."/>
+
+								<!-- Flight NO -->
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No."/>
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
+
+								<!-- Registration -->
+								<Label text="Registration"/>
+								<Input placeholder="Enter Registration."/>
+
+								<!-- Stand No -->
+								<Label text="Stand No"/>
+								<Input placeholder="Enter Stand No."/>
+
+								<!-- Involved Staff -->
+								<Label text="Involved Staff"/>
+								<FlexBox alignItems="Center">
+									<MultiComboBox placeholder="Select Staff"/>
+									<Button text="Add Multiple Persons"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultiplePersons"/>
+								</FlexBox>
+
+								<!-- Operations Phase -->
+								<Label text="Operations Phase"/>
+								<Input placeholder="Enter Operations Phase."/>
+
+								<!-- Origin -->
+								<Label text="Origin"/>
+								<Input placeholder="Enter Origin."/>
+
+								<!-- Destination -->
+								<Label text="Destination"/>
+								<Input placeholder="Enter Destination."/>
+
+								<!-- Scheduled Dep -->
+								<Label text="Scheduled Dep"/>
+								<Input placeholder="Enter Scheduled Dep."/>
+
+								<!-- Actual Dep -->
+								<Label text="Actual Dep"/>
+								<Input placeholder="Enter Actual Dep."/>
+
+								<!-- GSE Involved -->
+								<Label text="GSE Involved" required="true"/>
+								<FlexBox alignItems="Center">
+									<ComboBox id="gseInvolvedOccurrence"
+										placeholder="Select GSE Involved."
+										items="">
+										<core:Item key="{AssetId}" text="{AssetName}"/>
+									</ComboBox>
+									<Button text="Add Multiple Assets"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultipleAssets"/>
+								</FlexBox>
+
+							</VBox>
+
+
+							<!-- Aircraft Damage Noticed Involved -->
+
+							<VBox id="aircraftDamageNoticedSection"
+								visible="{createView>/bIsaircraftDamageNoticed}">
+
+								<layoutData>
+									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Airline Involved -->
+								<Label text="Airline Involved"/>
+								<Input placeholder="Enter Airline Involved."/>
+
+								<!-- Flight NO -->
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No."/>
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
+
+								<!-- Registration -->
+								<Label text="Registration"/>
+								<Input placeholder="Enter Registration."/>
+
+								<!-- Stand No -->
+								<Label text="Stand No"/>
+								<Input placeholder="Enter Stand No."/>
+
+								<!-- Involved Staff -->
+								<Label text="Involved Staff"/>
+								<FlexBox alignItems="Center">
+									<MultiComboBox placeholder="Select Staff"/>
+									<Button text="Add Multiple Persons"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultiplePersons"/>
+								</FlexBox>
+
+								<!-- Operations Phase -->
+								<Label text="Operations Phase"/>
+								<Input placeholder="Enter Operations Phase."/>
+
+								<!-- Origin -->
+								<Label text="Origin"/>
+								<Input placeholder="Enter Origin."/>
+
+								<!-- Destination -->
+								<Label text="Destination"/>
+								<Input placeholder="Enter Destination."/>
+
+								<!-- Scheduled Dep -->
+								<Label text="Scheduled Dep"/>
+								<Input placeholder="Enter Scheduled Dep."/>
+
+								<!-- GSE Involved -->
+								<Label text="GSE Involved" required="true"/>
+								<FlexBox alignItems="Center">
+									<ComboBox id="gseInvolvedNoticed"
+										placeholder="Select GSE Involved."
+										items="">
+										<core:Item key="{AssetId}" text="{AssetName}"/>
+									</ComboBox>
+									<Button text="Add Multiple Assets"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultipleAssets"/>
+								</FlexBox>
+
+							</VBox>
+
+							<!-- Aircraft Loading Error Involved -->
+
+							<VBox id="aircraftLoadingErrorSection"
+								visible="{createView>/bIsaircraftLoadingError}">
+
+								<layoutData>
+									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Environmental Impact -->
+								<Label text="Loading Error Type"/>
+								<Select width="100">
+									<core:Item key="Misplacement" text="Misplacement of cargo"/>
+									<core:Item key="Overloading" text="Overloading"/>
+								</Select>
+
+								<!-- Airline Involved -->
+								<Label text="Airline Involved"/>
+								<Input placeholder="Enter Airline Involved."/>
+
+								<!-- Flight NO -->
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No."/>
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
+
+								<!-- Registration -->
+								<Label text="Registration"/>
+								<Input placeholder="Enter Registration."/>
+
+								<!-- Stand No -->
+								<Label text="Stand No"/>
+								<Input placeholder="Enter Stand No."/>
+
+								<!-- Involved Staff -->
+								<Label text="Involved Staff"/>
+								<FlexBox alignItems="Center">
+									<MultiComboBox placeholder="Select Staff"/>
+									<Button text="Add Multiple Persons"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultiplePersons"/>
+								</FlexBox>
+
+								<!-- Environmental Impact -->
+								<Label text="Flown/Not Flown"/>
+								<Select width="100%">
+									<core:Item key="Flown" text="Flown"/>
+									<core:Item key="Not Flown" text="Not Flown"/>
+								</Select>
+
+								<!-- Operations Phase -->
+								<Label text="Operations Phase"/>
+								<Input placeholder="Enter Operations Phase."/>
+
+								<!-- Origin -->
+								<Label text="Origin"/>
+								<Input placeholder="Enter Origin."/>
+
+								<!-- Destination -->
+								<Label text="Destination"/>
+								<Input placeholder="Enter Destination."/>
+
+								<!-- Scheduled Dep -->
+								<Label text="Scheduled Dep"/>
+								<Input placeholder="Enter Scheduled Dep."/>
+
+								<!-- GSE Involved -->
+								<Label text="GSE Involved" required="true"/>
+								<FlexBox alignItems="Center">
+									<ComboBox id="gseInvolvedError"
+										placeholder="Select GSE Involved."
+										items="">
+										<core:Item key="{AssetId}" text="{AssetName}"/>
+									</ComboBox>
+									<Button text="Add Multiple Assets"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultipleAssets"/>
+								</FlexBox>
+
+							</VBox>
+
+
+							<!-- Boarding / Check-in Error -->
+
+							<VBox id="boardingCheckinErrorSection"
+								visible="{createView>/bIsBoardingCheckinError}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Pax Flown / Not Flown -->
+								<Label text="Pax Flown / Not Flown"/>
+								<Select width="100%">
+									<core:Item key="Yes" text="Yes"/>
+									<core:Item key="No" text="No"/>
+								</Select>
+
+								<!-- Airline -->
+								<Label text="Airline"/>
+								<Input placeholder="Enter Airline"/>
+
+								<!-- Flight No -->
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight Number"/>
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type"/>
+
+								<!-- Boarding Gate No -->
+								<Label text="Boarding Gate No"/>
+								<Input placeholder="Enter Boarding Gate Number"/>
+
+								<!-- Stand No -->
+								<Label text="Stand No"/>
+								<Input placeholder="Enter Stand Number"/>
+
+								<!-- Involved Staff -->
+								<Label text="Involved Staff"/>
+								<FlexBox alignItems="Center">
+									<MultiComboBox
+										id="boardingInvolvedStaff"
+										placeholder="Select Involved Staff"/>
+									<Button
+										text="Add Multiple Persons"
+										class="sapUiSmallMarginBegin"
+										press="onAddMultiplePersons"/>
+								</FlexBox>
+
+								<!-- Pax Joining / Transit -->
+								<Label text="Pax Joining / Transit"/>
+								<Select width="100%">
+									<core:Item key="Joining" text="Joining"/>
+									<core:Item key="Transit" text="Transit"/>
+								</Select>
+
+								<!-- Origin - Destination -->
+								<Label text="Origin - Destination"/>
+								<Input placeholder="Enter Origin - Destination"/>
+
+								<!-- Scheduled Departure -->
+								<Label text="Scheduled Dep"/>
+								<Input placeholder="Enter Scheduled Departure"/>
+
+								<!-- Actual Departure -->
+								<Label text="Actual Dep"/>
+								<Input placeholder="Enter Actual Departure"/>
+
+							</VBox>
+
+							<!-- HSR Drop Downs Items -->
+
+							<!-- Injured / Sick Staff Details -->
+
+							<VBox id="InjuredSickStaffDetailsSection"
+								visible="{createView>/bIsInjuredSickStaffDetails}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Causality Type -->
+								<Label text="Causality Type"/>
+								<Select width="100%">
+									<core:Item key="Primary" text="Primary"/>
+									<core:Item key="Secondary" text="Secondary"/>
+								</Select>
+
+								<!-- Nature of Injury/Illness -->
+								<Label text="Nature of Injury / Illness"/>
+								<Select width="100%">
+									<core:Item key="Injury" text="Injury"/>
+									<core:Item key="Illness" text="Illness"/>
+								</Select>
+
+								<!-- Injured Staff Company Name -->
+								<Label text="Injured Staff Company Name"/>
+								<Input placeholder="Enter Injured Staff Company Name."/>
+
+								<!-- Injured / Sick Staff Belongs to -->
+								<Label text="Injured / Sick Staff Belongs to"/>
+								<Select width="100%">
+									<core:Item key="Injury" text="Injury"/>
+									<core:Item key="Sick" text="Sick"/>
+								</Select>
+
+								<!-- Body Parts Affected -->
+								<Label text="Body Parts Affected"/>
+								<Input placeholder="Enter Body Parts Affected."/>
+
+								<!-- IP Staff No -->
+								<Label text="IP Staff No"/>
+								<Input placeholder="Enter Staff Number."/>
+
+								<!-- IP Mobile No -->
+								<Label text="IP Mobile No"/>
+								<Input placeholder="Enter IP Mobile Number."/>
+
+								<!-- IP Email Address -->
+								<Label text="IP Email Address"/>
+								<Input placeholder="Enter IP Email Address."/>
+
+								<!-- Detailed Description of Incient Location -->
+								<Label text="Detailed Description of Incient Location"/>
+								<TextArea rows="3" width="100%" placeholder="Enter Detailed Description of Incient Location."/>
+
+								<!-- More than 1 Person Injured -->
+								<Label text="More than 1 Person Injured"/>
+								<RadioButtonGroup id="moreRadioButton" ariaLabelledBy="moreRadioButtonLabel" columns="2" select="onSelectmoreRadioButton">
+									<buttons>
+										<RadioButton id="moreRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="moreRadioButtonLabel"/>
+										<RadioButton id="moreRadioButtonNo" text="No" ariaLabelledBy="moreRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+								<!-- <VBox id="moreContainer" visible="{appView>/data/bIsTheremore}" fieldGroupIds="moreInputFilterGroup">
+								<layoutData>
+									<layout:GridData id="idGridDataMoreAdditional" indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+								<FlexBox id="moreInputContainer" fieldGroupIds="moreInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="moreInput" fieldGroupIds="moreInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>moreRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>moreRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDatamore" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentmoreNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentmoreNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentmoreWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentmoreWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputFormore" press="_onDeletemoreInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputFormore"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>moreRole'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox> -->
+							</VBox>
+
+							<!-- Post Incident Action -->
+
+							<VBox id="PostIncidentActionSection"
+								visible="{createView>/bIsPostIncidentAction}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Line Manager Notified -->
+								<Label text="Line Manager Notified"/>
+								<RadioButtonGroup id="lineRadioButton" ariaLabelledBy="lineRadioButtonLabel" columns="2" select="onSelectlineRadioButton">
+									<buttons>
+										<RadioButton id="lineRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="lineRadioButtonLabel"/>
+										<RadioButton id="lineRadioButtonNo" text="No" ariaLabelledBy="lineRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<!-- Line Manager Name -->
+								<Label text="Line Manager Name"/>
+								<Input placeholder="Enter Line Manager Name."/>
+
+								<!-- First AID Provided -->
+								<Label text="First AID Provided"/>
+								<RadioButtonGroup id="aidRadioButton" ariaLabelledBy="aidRadioButtonLabel" columns="2" select="onSelectaidRadioButton">
+									<buttons>
+										<RadioButton id="aidRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="aidRadioButtonLabel"/>
+										<RadioButton id="aidRadioButtonNo" text="No" ariaLabelledBy="aidRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<!-- First AID Provided Name -->
+								<Label text="First AID Provided Name"/>
+								<Input placeholder="Enter First AID Provided Name."/>
+
+								<!-- Ambulance Service Involved -->
+								<Label text="Ambulance Service Involved"/>
+								<RadioButtonGroup id="ambulanceRadioButton" ariaLabelledBy="ambulanceRadioButtonLabel" columns="2" select="onSelectambulanceRadioButton">
+									<buttons>
+										<RadioButton id="ambulanceRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="ambulanceRadioButtonLabel"/>
+										<RadioButton id="ambulanceRadioButtonNo" text="No" ariaLabelledBy="ambulanceRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<!-- Went to Airport Clinic -->
+								<Label text="Went to Airport Clinic"/>
+								<RadioButtonGroup id="airportRadioButton" ariaLabelledBy="airportRadioButtonLabel" columns="2" select="onSelectairportRadioButton">
+									<buttons>
+										<RadioButton id="airportRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="airportRadioButtonLabel"/>
+										<RadioButton id="airportRadioButtonNo" text="No" ariaLabelledBy="airportRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<!-- Went External Hospital -->
+								<Label text="Went External Hospital"/>
+								<RadioButtonGroup id="externalRadioButton" ariaLabelledBy="externalRadioButtonLabel" columns="2" select="onSelectexternalRadioButton">
+									<buttons>
+										<RadioButton id="externalRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="externalRadioButtonLabel"/>
+										<RadioButton id="externalRadioButtonNo" text="No" ariaLabelledBy="externalRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+								
+							</VBox>
+
+							<!-- Incident Witness Type -->
+
+							<VBox id="IncidentWitnessTypeSection"
+								visible="{createView>/bIsIncidentWitnessType}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Witness Name -->
+								<Label text="Witness Name"/>
+								<Input placeholder="Witness Name."/>
+
+								<!-- Witness Company Name -->
+								<Label text="Witness Company Name"/>
+								<Input placeholder="Enter Witness Company Name."/>
+
+								<!-- Witness Employee ID -->
+								<Label text="Witness Employee ID"/>
+								<Input placeholder="Enter Witness Employee ID."/>
+
+								<!-- Witness Contact Number -->
+								<Label text="Witness Contact Number"/>
+								<Input placeholder="Enter Witness Contact Number."/>
+
+								<!-- Witness Statement Attached -->
+								<Label id="witnessStatementAttached" text="Witness Statement Attached"/>
+							<RadioButtonGroup id="witnessstatementRadioButton" ariaLabelledBy="witnessRadioButtonLabel" columns="2" select="onSelectwitnessRadioButton">
+								<buttons>
+									<RadioButton id="witnessstatementRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="witnessRadioButtonLabel"/>
+									<RadioButton id="witnessstatementRadioButtonNo" text="No" ariaLabelledBy="witnessRadioButtonLabel"/>
+								</buttons>
+							</RadioButtonGroup>
+							</VBox>
+
+							<!-- Any GSE Involvement in Injury Case -->
+
+							<VBox id="AnyGSEInvolvementinInjuryCaseSection"
+								visible="{createView>/bIsAnyGSEInvolvementinInjuryCase}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- GSE 1 Involved -->
+								<Label text="GSE 1 Involved"/>
+								<Input placeholder="GSE 1 Involved."/>
+
+								<!-- GSE 1 No -->
+								<Label text="GSE 1 No"/>
+								<Input placeholder="Enter GSE 1 No."/>
+
+								<!-- GSE 1 Belongs to -->
+								<Label text="GSE 1 Belongs to"/>
+								<Input placeholder="Enter GSE 1 Belongs to."/>
+
+								<!-- GSE 2 Involved -->
+								<Label text="GSE 2 Involved"/>
+								<Input placeholder="GSE 2 Involved."/>
+
+								<!-- GSE 2 No -->
+								<Label text="GSE 2 No"/>
+								<Input placeholder="Enter GSE 2 No."/>
+
+								<!-- GSE 2 Belongs to -->
+								<Label text="GSE 2 Belongs to"/>
+								<Input placeholder="Enter GSE 2 Belongs to."/>
+
+								<!-- Any Property Damage -->
+								<Label text="Any Property Damage"/>
+								<TextArea rows="3" width="100%" placeholder="Enter Any Property Damage."/>
+
+								<!-- Was Any Material Released -->
+								<Label text="Was Any Material Released"/>
+								<Input placeholder="Enter Was Any Material Released."/>
+
+								<!-- Location -->
+
+								<Label id="idLabelLocation" labelFor="idLocation" text="Location"/>
+							<Input id="idLocation" placeholder="Enter Location." showValueHelp="true" value="{appView>/data/sLocationName}"
+								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
+								filterSuggests="false">
+								<suggestionColumns>
+									<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
+									</Column>
+									<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
+									</Column>
+									<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+										<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
+									</Column>
+								</suggestionColumns>
+							</Input>
+
+								<!-- GSE Operator Name -->
+								<Label text="GSE Operator Name"/>
+								<Input placeholder="GSE Operator Name."/>
+
+								<!-- Operator Statement Available -->
+								<Label id="operatorRadioButtonLabel" text="Operator Statement Available"/>
+								<RadioButtonGroup id="operatorRadioButton" ariaLabelledBy="operatorRadioButtonLabel" columns="2" select="onSelectoperatorRadioButton">
+									<buttons>
+										<RadioButton id="operatorRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="operatorRadioButtonLabel"/>
+										<RadioButton id="operatorRadioButtonNo" text="No" ariaLabelledBy="operatorRadioButtonLabel"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<!-- Operator Contact Number -->
+								<Label text="Operator Contact Number"/>
+								<Input placeholder="Operator Contact Number."/>
+
+								
+							</VBox>
+
+
+							<!-- Occurrence Classification -->
+							<Label id="idOccurrenceClassification" labelFor="idOccurrenceClassification" required="false" text="Occurrence Classification"/>
+							<ComboBox id="idSelOccurrenceClassificatrion" change="onOccurrenceTypeChange" app:mandatoryErrorMessage="Please Select a Occurrence Classification" width="100%">
+								<items>
+									<core:Item key="A" text="A"/>
+									<core:Item key="B" text="B"/>
+									<core:Item key="C" text="C"/>
+									<core:Item key="D" text="D"/>
+									<core:Item key="E" text="E"/>
+								</items>
+							</ComboBox>
+
+						</form:content>
+					</form:SimpleForm>
+				</layout:content>
+			</layout:VerticalLayout>
+		</semantic:content>
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator id="messageIndicator" press="onPressMessagesButton"/>
+		</semantic:messagesIndicator>
+		<semantic:mainAction>
+			<semantic:MainAction id="save" press="onSave" text="{i18n>sendIncident}"/>
+		</semantic:mainAction>
+		<semantic:cancelAction>
+			<semantic:CancelAction id="cancel" press="onCancel"/>
+		</semantic:cancelAction>
+	</semantic:DetailPage>
+</mvc:View>
