@@ -40,7 +40,7 @@ This extensibility project is used to:
 
 ---
 
-## Scope (Frontend Only)
+## Scope 
 
 This project includes:
 
@@ -50,7 +50,7 @@ This project includes:
 * JSON Models for temporary UI data
 * Formatter functions for UI display logic
 
-This project **does NOT include**:
+This project **Now does NOT include**:
 
 * Backend (ABAP / CAP) changes
 * OData service changes
@@ -58,7 +58,7 @@ This project **does NOT include**:
 
 ---
 
-## Folder Structure (High Level)
+## Folder Structure 
 
 ```
 webapp/
@@ -112,6 +112,3 @@ webapp/
 
 ---
 
-* Rewrite in **professional corporate English**
-
-Just tell me 👍
