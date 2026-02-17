@@ -100,9 +100,9 @@ webapp/
 
 1. Open **SAP Business Application Studio**
 2. Open this project in the workspace
-3. Run the application using **Fiori Run Configuration**
+3. Run the application using **npm start**
 4. Preview the app in browser
-5. Launch via **Fiori Launchpad** (if configured)
+5. Launch via **Fiori Launchpad** (If Configured Deploy)
 
 ---
 
@@ -117,5 +117,25 @@ webapp/
 
 ## New Incident
 <img width="1586" height="808" alt="image" src="https://github.com/user-attachments/assets/f68ce198-203c-4f21-96ca-e232b829147f" />
+
+---
+
+## GOR
+<img width="1177" height="802" alt="image" src="https://github.com/user-attachments/assets/d6cb86c5-85ea-4acb-8235-0ded69e329db" />
+
+---
+
+## HSR
+<img width="1182" height="801" alt="image" src="https://github.com/user-attachments/assets/1a6e646b-da28-4fc1-9a5a-b0ad219feadb" />
+
+---
+
+## DGOR
+<img width="1177" height="797" alt="image" src="https://github.com/user-attachments/assets/dc8d8e52-2aa3-4aee-9eae-153ab12a499c" />
+
+---
+
+## SOR
+<img width="1176" height="802" alt="image" src="https://github.com/user-attachments/assets/bc240365-a561-4e14-9f0c-be87a6dc72a2" />
 
 ---
