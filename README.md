@@ -2,10 +2,10 @@
 
 ## Overview
 
-This project is a **frontend extensibility application** for the **SAP Fiori Report Incident app (F3163)**.
-The purpose of this app is to **extend the standard SAP incident reporting UI** by adding custom fields, sections, validations, and logic **without modifying the standard SAP code**.
+This Project is a **Frontend Extensibility Application** for the **SAP Fiori Report Incident app (F3163)**.
+The purpose of this app is to **Extend the Standard SAP Incident Reporting UI** by adding custom fields, sections, validations, and logic **Without Modifying the Standard SAP Code**.
 
-This project is developed **only for frontend** using **SAPUI5** in **SAP Business Application Studio (BAS)**.
+This Project is developed **Only for Frontend** using **SAPUI5** in **SAP Business Application Studio (BAS)**.
 
 ---
 
@@ -29,28 +29,28 @@ This project is developed **only for frontend** using **SAPUI5** in **SAP Busine
 
 ## Purpose of the Extension
 
-This extensibility project is used to:
+This Extensibility Project is used to:
 
-* Add **custom UI sections** to the Report Incident screen
-* Add **custom fields** (Input, ComboBox, DatePicker, etc.)
-* Control **visibility and enablement** of fields
-* Add **custom validation logic**
-* Handle **dropdown data binding**
-* Implement **business rules using controller logic**
+* Add **Custom UI Sections** to the Report Incident screen
+* Add **Custom Fields** (Input, ComboBox, DatePicker, etc.)
+* Control **Visibility and Enablement** of fields
+* Add **Custom Validation Logic**
+* Handle **Dropdown Data Binding**
+* Implement **Business Rules using Controller Logic**
 
 ---
 
 ## Scope 
 
-This project includes:
+This Project Includes:
 
 * XML View Extensions
 * Controller Extensions
-* Fragment usage for reusable UI
-* JSON Models for temporary UI data
-* Formatter functions for UI display logic
+* Fragment usage for Reusable UI
+* JSON Models for Temporary UI data
+* Formatter Functions for UI Display Logic
 
-This project **Now does NOT include**:
+This Project **Now does NOT include**:
 
 * Backend (ABAP / CAP) changes
 * OData service changes
@@ -65,6 +65,9 @@ webapp/
 │── controller/
 │   └── CreateIncidentCustom.controller.js
 │
+│── i18n/
+│   └── i18n.properties
+│
 │── view/
 │   └── CreateIncidentCustom.view.xml
 │
@@ -75,21 +78,21 @@ webapp/
 
 ## Key Features Implemented
 
-* Custom incident sections (GSE, GOR, etc.)
-* Dynamic dropdown binding
-* Conditional field visibility
-* Validation before submit
-* Reusable UI using fragments
-* Clean separation of logic and UI
+* Custom Incident Classification Sections (GOR, HSR, DGOR, SOR.)
+* Dynamic Dropdown Binding
+* Conditional Field Visibility
+* Validation Before Submit
+* Reusable UI using Fragments
+* Clean Separation of Logic and UI
 
 ---
 
 ## Development Environment
 
 * SAP Business Application Studio (BAS)
-* SAP Fiori tools extension
+* SAP Fiori Tools Extension
 * Node.js (provided by BAS)
-* SAPUI5 framework
+* SAPUI5 Framework
 
 ---
 
@@ -105,10 +108,10 @@ webapp/
 
 ## Extensibility Approach
 
-* Uses **SAP-supported extensibility** methods
-* No modification of standard SAP code
-* Safe for upgrades
-* Follows SAP best practices
+* Uses **SAP-Supported Extensibility** Methods
+* No Modification of Standard SAP Code
+* Safe for Upgrades
+* Follows SAP Best Practices
 
 ---
 
