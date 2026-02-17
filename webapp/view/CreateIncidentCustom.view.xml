@@ -3,7 +3,7 @@
     Copyright (C) 2009-2023 SAP SE or an SAP affiliate company. All rights reserved.
 
 -->
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:form="sap.ui.layout.form"
+<mvc:View xmlns:odata="sap.ui.comp.odata" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:form="sap.ui.layout.form"
 	xmlns:layout="sap.ui.layout" xmlns:unified="sap.ui.unified" xmlns="sap.m"
 	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
 	controllerName="ehs.inc.reportincidents1.controller.CreateIncident">
@@ -254,7 +254,7 @@
 
 							<!-- Contact Number  -->
 							<Label id="idConactNumber" labelFor="idContactNumber" text="Contact Number"/>
-							<Input id="idConatctNumber" placeholder="Enter Contact Number." value="" 
+							<Input id="idConatctNumber" placeholder="Enter Contact Number." type="Tel" maxLength="10" value="{contactModel>/contactNumber}" liveChange=".onContactNumberChange"
 							visible="{=${ContactNumber}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
 								app:mandatoryErrorMessage="Please Enter the Contact Number" width="100%"/>
 
@@ -336,7 +336,8 @@
 										width="100%"
 										placeholder="Select Occurrence Type"
 										items="{ui>/dropdownItems}"
-										selectionChange="onOccurrenceTypeChange">
+										selectionChange="onOccurrenceTypeChange"
+										visible="false">
 
 										<core:Item
 											key="{ui>key}"
@@ -370,25 +371,27 @@
 
 								<!-- GSE Belongs To -->
 								<Label text="GSE Belongs To"/>
-								<Input placeholder="Enter Owner / Department."/>
+								<Input placeholder="Enter GSE Belongs To."/>
 
 								<!-- Property Damage -->
 								<Label text="Any Property Damage"/>
-								<TextArea rows="3" width="100%"
+								<Input
 									placeholder="Enter property damage details."/>
 
-								<!-- Environmental Impact -->
-								<Label text="Was any material released"/>
-								<Select width="100%">
-									<core:Item key="YES" text="Yes"/>
-									<core:Item key="NO" text="No"/>
-								</Select>
+								<!-- Was any Material Released -->
+								<Label text="Was any Material Released"/>
+								<RadioButtonGroup id="materialRadioButton" ariaLabelledBy="materialRadioButtonLabel" columns="2" select="onSelectmaterialRadioButton">
+									<buttons>
+										<RadioButton id="materialRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="materialRadioButtonLabel"/>
+										<RadioButton id="materialRadioButtonNo" text="No" ariaLabelledBy="materialRadioButtonLabel" selected="true" />
+									</buttons>
+								</RadioButtonGroup>
 
 								<!-- Location Details -->
 								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand Number."/>
+								<Input placeholder="Enter Stand Number." type="Number"/>
 
-								<!-- Personnel -->
+								<!-- Persons -->
 								<Label text="Involved Staff"/>
 								<FlexBox alignItems="Center">
 									<MultiComboBox placeholder="Select Staff"/>
@@ -396,11 +399,7 @@
 										class="sapUiSmallMarginBegin"
 										press="onAddMultiplePersons"/>
 								</FlexBox>
-
 							</VBox>
-
-							
-
 							<!-- Aircraft Damage Occurrence Involved -->
 
 							<VBox id="aircraftDamageOccurrenceSection"
@@ -415,8 +414,8 @@
 								<Input placeholder="Enter Airline Involved."/>
 
 								<!-- Flight NO -->
-								<Label text="Flight No"/>
-								<Input placeholder="Enter Flight No."/>
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight No." type="Number"/>
 
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
@@ -428,7 +427,7 @@
 
 								<!-- Stand No -->
 								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand No."/>
+								<Input placeholder="Enter Stand No." type="Number" />
 
 								<!-- Involved Staff -->
 								<Label text="Involved Staff"/>
@@ -489,8 +488,8 @@
 								<Input placeholder="Enter Airline Involved."/>
 
 								<!-- Flight NO -->
-								<Label text="Flight No"/>
-								<Input placeholder="Enter Flight No."/>
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight No." type="Number" />
 
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
@@ -502,7 +501,7 @@
 
 								<!-- Stand No -->
 								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand No."/>
+								<Input placeholder="Enter Stand No." type="Number" />
 
 								<!-- Involved Staff -->
 								<Label text="Involved Staff"/>
@@ -555,18 +554,18 @@
 
 								<!-- Environmental Impact -->
 								<Label text="Loading Error Type"/>
-								<Select width="100">
+								<ComboBox width="100%">
 									<core:Item key="Misplacement" text="Misplacement of cargo"/>
 									<core:Item key="Overloading" text="Overloading"/>
-								</Select>
+								</ComboBox>
 
-								<!-- Airline Involved -->
-								<Label text="Airline Involved"/>
-								<Input placeholder="Enter Airline Involved."/>
+								<!-- Airline -->
+								<Label text="Airline"/>
+								<Input placeholder="Enter Airline."/>
 
 								<!-- Flight NO -->
-								<Label text="Flight No"/>
-								<Input placeholder="Enter Flight No."/>
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight No." type="Number" />
 
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
@@ -577,8 +576,8 @@
 								<Input placeholder="Enter Registration."/>
 
 								<!-- Stand No -->
-								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand No."/>
+								<Label text="Stand Number"/>
+								<Input placeholder="Enter Stand No." type="Number" />
 
 								<!-- Involved Staff -->
 								<Label text="Involved Staff"/>
@@ -589,28 +588,32 @@
 										press="onAddMultiplePersons"/>
 								</FlexBox>
 
-								<!-- Environmental Impact -->
+								<!-- Flown / Not-Flown -->
 								<Label text="Flown/Not Flown"/>
-								<Select width="100%">
+								<ComboBox width="100%">
 									<core:Item key="Flown" text="Flown"/>
 									<core:Item key="Not Flown" text="Not Flown"/>
-								</Select>
+								</ComboBox>
 
-								<!-- Operations Phase -->
-								<Label text="Operations Phase"/>
-								<Input placeholder="Enter Operations Phase."/>
+								<!-- Weight Difference -->
+								<Label text="Weight Difference"/>
+								<Input placeholder="Enter Weight Difference."/>
 
-								<!-- Origin -->
-								<Label text="Origin"/>
-								<Input placeholder="Enter Origin."/>
+								<!-- Origin - Destination -->
+								<Label text="Origin - Destination"/>
+								<Input placeholder="Enter Origin - Destination."/>
 
 								<!-- Destination -->
-								<Label text="Destination"/>
-								<Input placeholder="Enter Destination."/>
+								<!-- <Label text="Destination"/>
+								<Input placeholder="Enter Destination."/> -->
 
 								<!-- Scheduled Dep -->
 								<Label text="Scheduled Dep"/>
 								<Input placeholder="Enter Scheduled Dep."/>
+
+								<!-- Actual Dep -->
+								<Label text="Actual Dep"/>
+								<Input placeholder="Enter Actual Dep."/>
 
 								<!-- GSE Involved -->
 								<Label text="GSE Involved" required="true"/>
@@ -646,30 +649,30 @@
 
 								<!-- Airline -->
 								<Label text="Airline"/>
-								<Input placeholder="Enter Airline"/>
+								<Input placeholder="Enter Airline."/>
 
 								<!-- Flight No -->
-								<Label text="Flight No"/>
-								<Input placeholder="Enter Flight Number"/>
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight Number." type="Number" />
 
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
 
 								<!-- Boarding Gate No -->
 								<Label text="Boarding Gate No"/>
-								<Input placeholder="Enter Boarding Gate Number"/>
+								<Input placeholder="Enter Boarding Gate Number." type="Number" />
 
 								<!-- Stand No -->
 								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand Number"/>
+								<Input placeholder="Enter Stand Number." type="Number" />
 
 								<!-- Involved Staff -->
 								<Label text="Involved Staff"/>
 								<FlexBox alignItems="Center">
 									<MultiComboBox
 										id="boardingInvolvedStaff"
-										placeholder="Select Involved Staff"/>
+										placeholder="Select Involved Staff."/>
 									<Button
 										text="Add Multiple Persons"
 										class="sapUiSmallMarginBegin"
@@ -685,15 +688,15 @@
 
 								<!-- Origin - Destination -->
 								<Label text="Origin - Destination"/>
-								<Input placeholder="Enter Origin - Destination"/>
+								<Input placeholder="Enter Origin - Destination."/>
 
 								<!-- Scheduled Departure -->
 								<Label text="Scheduled Dep"/>
-								<Input placeholder="Enter Scheduled Departure"/>
+								<Input placeholder="Enter Scheduled Departure."/>
 
 								<!-- Actual Departure -->
 								<Label text="Actual Dep"/>
-								<Input placeholder="Enter Actual Departure"/>
+								<Input placeholder="Enter Actual Departure."/>
 
 							</VBox>
 
@@ -738,58 +741,77 @@
 								<Input placeholder="Enter Body Parts Affected."/>
 
 								<!-- IP Staff No -->
-								<Label text="IP Staff No"/>
-								<Input placeholder="Enter Staff Number."/>
+								<Label text="IP Staff Number"/>
+								<Input placeholder="Enter Staff Number." type="Number"/>
 
 								<!-- IP Mobile No -->
-								<Label text="IP Mobile No"/>
-								<Input placeholder="Enter IP Mobile Number."/>
+								<Label text="IP Mobile Number"/>
+								<Input placeholder="Enter IP Mobile Number." type="Tel" maxLength="10"/>
 
 								<!-- IP Email Address -->
 								<Label text="IP Email Address"/>
-								<Input placeholder="Enter IP Email Address."/>
+								<Input placeholder="Enter IP Email Address." type="Email" />
 
 								<!-- Detailed Description of Incient Location -->
 								<Label text="Detailed Description of Incient Location"/>
-								<TextArea rows="3" width="100%" placeholder="Enter Detailed Description of Incient Location."/>
+								<TextArea placeholder="Enter Detailed Description of Incient Location." rows="3" width="100%" />
 
 								<!-- More than 1 Person Injured -->
 								<Label text="More than 1 Person Injured"/>
 								<RadioButtonGroup id="moreRadioButton" ariaLabelledBy="moreRadioButtonLabel" columns="2" select="onSelectmoreRadioButton">
 									<buttons>
 										<RadioButton id="moreRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="moreRadioButtonLabel"/>
-										<RadioButton id="moreRadioButtonNo" text="No" ariaLabelledBy="moreRadioButtonLabel"/>
+										<RadioButton id="moreRadioButtonNo" text="No" ariaLabelledBy="moreRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
-								<!-- <VBox id="moreContainer" visible="{appView>/data/bIsTheremore}" fieldGroupIds="moreInputFilterGroup">
-								<layoutData>
-									<layout:GridData id="idGridDataMoreAdditional" indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
-								<FlexBox id="moreInputContainer" fieldGroupIds="moreInputContainerGroup">
-									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="moreInput" fieldGroupIds="moreInputFilterGroup"
-										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
-										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>moreRole'], formatter: 'formatMessage'}"
-										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>moreRole'], formatter: 'formatMessage'}" showValueHelp="true"
-										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
-										suggest=".handlePersonSuggest" filterSuggests="false">
-										<layoutData>
-											<FlexItemData id="idGridDatamore" growFactor="3"/>
-										</layoutData>
-										<suggestionColumns>
-											<Column id="idColumnIncidentmoreNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-												<Label id="idLabelIncidentmoreNameId" text="{i18n>personNameBPId}"/>
-											</Column>
-											<Column id="idColumnIncidentmoreWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
-												<Label id="idLabelIncidentmoreWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
-											</Column>
-										</suggestionColumns>
-									</Input>
-									<Button id="removeInputFormore" press="_onDeletemoreInput" icon="sap-icon://sys-cancel" type="Reject"
-										tooltip="{i18n>removePersonTooltip}"/>
-								</FlexBox>
-								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputFormore"
-									text="{parts: ['i18n>addAnotherPerson', 'i18n>moreRole'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
-							</VBox> -->
+
+								<VBox id="idMore" visible="false">
+								<!-- Causality Type -->
+								<Label text="Causality Type"/>
+								<Select width="100%">
+									<core:Item key="Primary" text="Primary"/>
+									<core:Item key="Secondary" text="Secondary"/>
+								</Select>
+
+								<!-- Nature of Injury/Illness -->
+								<Label text="Nature of Injury / Illness"/>
+								<Select width="100%">
+									<core:Item key="Injury" text="Injury"/>
+									<core:Item key="Illness" text="Illness"/>
+								</Select>
+
+								<!-- Injured Staff Company Name -->
+								<Label text="Injured Staff Company Name"/>
+								<Input placeholder="Enter Injured Staff Company Name."/>
+
+								<!-- Injured / Sick Staff Belongs to -->
+								<Label text="Injured / Sick Staff Belongs to"/>
+								<Select width="100%">
+									<core:Item key="Injury" text="Injury"/>
+									<core:Item key="Sick" text="Sick"/>
+								</Select>
+
+								<!-- Body Parts Affected -->
+								<Label text="Body Parts Affected"/>
+								<Input placeholder="Enter Body Parts Affected."/>
+
+								<!-- IP Staff No -->
+								<Label text="IP Staff Number"/>
+								<Input placeholder="Enter Staff Number." type="Number"/>
+
+								<!-- IP Mobile No -->
+								<Label text="IP Mobile Number"/>
+								<Input placeholder="Enter IP Mobile Number." type="Tel" maxLength="10"/>
+
+								<!-- IP Email Address -->
+								<Label text="IP Email Address"/>
+								<Input placeholder="Enter IP Email Address." type="Email" />
+
+								<!-- Detailed Description of Incient Location -->
+								<Label text="Detailed Description of Incient Location"/>
+								<TextArea placeholder="Enter Detailed Description of Incient Location." rows="3" width="100%" />
+								</VBox>
+								
 							</VBox>
 
 							<!-- Post Incident Action -->
@@ -806,33 +828,37 @@
 								<RadioButtonGroup id="lineRadioButton" ariaLabelledBy="lineRadioButtonLabel" columns="2" select="onSelectlineRadioButton">
 									<buttons>
 										<RadioButton id="lineRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="lineRadioButtonLabel"/>
-										<RadioButton id="lineRadioButtonNo" text="No" ariaLabelledBy="lineRadioButtonLabel"/>
+										<RadioButton id="lineRadioButtonNo" text="No" ariaLabelledBy="lineRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
 
 								<!-- Line Manager Name -->
+								<VBox id="idLineManagerName" visible="false">
 								<Label text="Line Manager Name"/>
 								<Input placeholder="Enter Line Manager Name."/>
+								</VBox>
 
 								<!-- First AID Provided -->
-								<Label text="First AID Provided"/>
+								<Label text="First AID Provided?"/>
 								<RadioButtonGroup id="aidRadioButton" ariaLabelledBy="aidRadioButtonLabel" columns="2" select="onSelectaidRadioButton">
 									<buttons>
 										<RadioButton id="aidRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="aidRadioButtonLabel"/>
-										<RadioButton id="aidRadioButtonNo" text="No" ariaLabelledBy="aidRadioButtonLabel"/>
+										<RadioButton id="aidRadioButtonNo" text="No" ariaLabelledBy="aidRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
 
 								<!-- First AID Provided Name -->
+								<VBox id="idFirstAIDProvidedName" visible="false">
 								<Label text="First AID Provided Name"/>
 								<Input placeholder="Enter First AID Provided Name."/>
-
+								</VBox>
+								
 								<!-- Ambulance Service Involved -->
 								<Label text="Ambulance Service Involved"/>
 								<RadioButtonGroup id="ambulanceRadioButton" ariaLabelledBy="ambulanceRadioButtonLabel" columns="2" select="onSelectambulanceRadioButton">
 									<buttons>
 										<RadioButton id="ambulanceRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="ambulanceRadioButtonLabel"/>
-										<RadioButton id="ambulanceRadioButtonNo" text="No" ariaLabelledBy="ambulanceRadioButtonLabel"/>
+										<RadioButton id="ambulanceRadioButtonNo" text="No" ariaLabelledBy="ambulanceRadioButtonLabel" selected="true"/>
 									</buttons>
 								</RadioButtonGroup>
 
@@ -841,7 +867,7 @@
 								<RadioButtonGroup id="airportRadioButton" ariaLabelledBy="airportRadioButtonLabel" columns="2" select="onSelectairportRadioButton">
 									<buttons>
 										<RadioButton id="airportRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="airportRadioButtonLabel"/>
-										<RadioButton id="airportRadioButtonNo" text="No" ariaLabelledBy="airportRadioButtonLabel"/>
+										<RadioButton id="airportRadioButtonNo" text="No" ariaLabelledBy="airportRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
 
@@ -850,7 +876,7 @@
 								<RadioButtonGroup id="externalRadioButton" ariaLabelledBy="externalRadioButtonLabel" columns="2" select="onSelectexternalRadioButton">
 									<buttons>
 										<RadioButton id="externalRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="externalRadioButtonLabel"/>
-										<RadioButton id="externalRadioButtonNo" text="No" ariaLabelledBy="externalRadioButtonLabel"/>
+										<RadioButton id="externalRadioButtonNo" text="No" ariaLabelledBy="externalRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
 								
@@ -867,7 +893,7 @@
 
 								<!-- Witness Name -->
 								<Label text="Witness Name"/>
-								<Input placeholder="Witness Name."/>
+								<Input placeholder="Enter Witness Name."/>
 
 								<!-- Witness Company Name -->
 								<Label text="Witness Company Name"/>
@@ -879,14 +905,14 @@
 
 								<!-- Witness Contact Number -->
 								<Label text="Witness Contact Number"/>
-								<Input placeholder="Enter Witness Contact Number."/>
+								<Input placeholder="Enter Witness Contact Number." type="Number" />
 
 								<!-- Witness Statement Attached -->
 								<Label id="witnessStatementAttached" text="Witness Statement Attached"/>
 							<RadioButtonGroup id="witnessstatementRadioButton" ariaLabelledBy="witnessRadioButtonLabel" columns="2" select="onSelectwitnessRadioButton">
 								<buttons>
 									<RadioButton id="witnessstatementRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="witnessRadioButtonLabel"/>
-									<RadioButton id="witnessstatementRadioButtonNo" text="No" ariaLabelledBy="witnessRadioButtonLabel"/>
+									<RadioButton id="witnessstatementRadioButtonNo" text="No" ariaLabelledBy="witnessRadioButtonLabel" selected="true" />
 								</buttons>
 							</RadioButtonGroup>
 							</VBox>
@@ -906,7 +932,7 @@
 
 								<!-- GSE 1 No -->
 								<Label text="GSE 1 No"/>
-								<Input placeholder="Enter GSE 1 No."/>
+								<Input placeholder="Enter GSE 1 No." type="Number" />
 
 								<!-- GSE 1 Belongs to -->
 								<Label text="GSE 1 Belongs to"/>
@@ -918,7 +944,7 @@
 
 								<!-- GSE 2 No -->
 								<Label text="GSE 2 No"/>
-								<Input placeholder="Enter GSE 2 No."/>
+								<Input placeholder="Enter GSE 2 No." type="Number" />
 
 								<!-- GSE 2 Belongs to -->
 								<Label text="GSE 2 Belongs to"/>
@@ -935,21 +961,30 @@
 								<!-- Location -->
 
 								<Label id="idLabelLocation" labelFor="idLocation" text="Location"/>
-							<Input id="idLocation" placeholder="Enter Location." showValueHelp="true" value="{appView>/data/sLocationName}"
-								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
-								filterSuggests="false">
-								<suggestionColumns>
-									<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
-									</Column>
-									<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
-									</Column>
-									<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
-									</Column>
-								</suggestionColumns>
-							</Input>
+								<!-- <Input id="idLocation" placeholder="Enter Location." showValueHelp="true" value="{appView>/data/sLocationName}"
+									showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
+									filterSuggests="false">
+									<suggestionColumns>
+										<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+											<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
+										</Column>
+										<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+											<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
+										</Column>
+										<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+											<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
+										</Column>
+									</suggestionColumns>
+								</Input> -->
+								<ComboBox id="idSelLocation" change="onLocationChange" app:mandatoryErrorMessage="Please Select a Location" width="100%">
+								<items>
+									<core:Item key="A" text="MDU"/>
+									<core:Item key="B" text="CMB"/>
+									<core:Item key="C" text="TRI"/>
+									<core:Item key="D" text="CHE"/>
+									<core:Item key="E" text="SA"/>
+								</items>
+								</ComboBox>
 
 								<!-- GSE Operator Name -->
 								<Label text="GSE Operator Name"/>
@@ -960,21 +995,291 @@
 								<RadioButtonGroup id="operatorRadioButton" ariaLabelledBy="operatorRadioButtonLabel" columns="2" select="onSelectoperatorRadioButton">
 									<buttons>
 										<RadioButton id="operatorRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="operatorRadioButtonLabel"/>
-										<RadioButton id="operatorRadioButtonNo" text="No" ariaLabelledBy="operatorRadioButtonLabel"/>
+										<RadioButton id="operatorRadioButtonNo" text="No" ariaLabelledBy="operatorRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
 
 								<!-- Operator Contact Number -->
+								<VBox id="idoperatorInp"  visible="false" >
 								<Label text="Operator Contact Number"/>
-								<Input placeholder="Operator Contact Number."/>
-
+								<Input placeholder="Operator Contact Number." type="Number" />
+								</VBox>
+								
 								
 							</VBox>
 
+							<Label text="" />
+
+							<!-- DGOR -->
+
+							<VBox id="DGORSection"
+								visible="{createView>/bIsDGOR}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Airline -->
+								<Label text="Airline"/>
+								<Input placeholder="Enter Airline."/>
+
+								<!-- Flight Date -->
+								<Label text="Flight Date"/>
+								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date."/>
+
+								<!-- Flight Number -->
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight Number." type="Number" />
+
+								<!-- Aircraft Registration -->
+								<Label text="Aircraft Registration"/>
+								<Input placeholder="Enter Aircraft Registration." />
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
+								
+								<!-- Origin Airport -->
+								<Label id="originAirportLabel" text="OriginAirport"/>
+								<ComboBox id="idSelOriginAirport" change="onOriginAirportChange" app:mandatoryErrorMessage="Please Select a Origin Airport" width="100%">
+								<items>
+									<core:Item key="A" text="JFK"/>
+									<core:Item key="B" text="LON"/>
+									<core:Item key="C" text="CAN"/>
+									<core:Item key="D" text="AMC"/>
+									<core:Item key="E" text="SA"/>
+								</items>
+								</ComboBox>
+
+								<!-- Destination Airport -->
+								<Label id="destinationAirportLabel" text="Destination Airport"/>
+								<ComboBox id="idSelDestinationAirport" change="onDestinationAirportChange" app:mandatoryErrorMessage="Please Select a Destination Airport" width="100%">
+								<items>
+									<core:Item key="A" text="INR"/>
+									<core:Item key="B" text="FRE"/>
+									<core:Item key="C" text="DUB"/>
+									<core:Item key="D" text="SU"/>
+									<core:Item key="E" text="SI"/>
+								</items>
+								</ComboBox>
+
+								<!-- Origin of the Goods -->
+								<Label text="Origin of the Goods"/>
+								<Input placeholder="Enter Origin of the Goods." />
+
+								<!-- Proper Shipping Name -->
+								<Label text="Proper Shipping Name"/>
+								<Input placeholder="Enter Proper Shipping Name." />
+
+								<!-- UN/ID Number -->
+								<Label text="UN/ID Number"/>
+								<Input placeholder="Enter UN/ID Number." type="Number" />
+
+								<!-- Class/Division -->
+								<Label id="classLabel" text="Class / Division"/>
+								<ComboBox id="idSelClass" change="onClassChange" app:mandatoryErrorMessage="Please Select a Class/Division" width="100%">
+								<items>
+									<core:Item key="A" text="Class"/>
+									<core:Item key="B" text="Division"/>
+								</items>
+								</ComboBox>
+
+								<!-- Subsidiary Hazards -->
+								<Label id="subsidiaryHazardsLabel" text="Subsidiary Hazards"/>
+								<ComboBox id="idSelSubsidiaryHazards" change="onSubsidiaryHazardsChange" app:mandatoryErrorMessage="Please Select a Subsidiary Hazards" width="100%">
+								<items>
+									<core:Item key="A" text="Subsidiary"/>
+									<core:Item key="B" text="Hazards"/>
+								</items>
+								</ComboBox>
+
+								<!-- Packing Group -->
+								<Label id="packingLabel" text="Packing Group"/>
+								<ComboBox id="idSelPacking" change="onPackingChange" app:mandatoryErrorMessage="Please Select a Packing Group" width="100%">
+								<items>
+									<core:Item key="A" text="Packing"/>
+									<core:Item key="B" text="Group"/>
+								</items>
+								</ComboBox>
+
+								<!-- Category -->
+								<Label id="categoryLabel" text="Category (Class 7 Only)"/>
+								<ComboBox id="idSelCategory" change="onCategoryChange" app:mandatoryErrorMessage="Please Select a Category" width="100%">
+								<items>
+									<core:Item key="A" text="Category 1"/>
+									<core:Item key="B" text="Category 2"/>
+								</items>
+								</ComboBox>
+
+								<!-- Type of Packaging -->
+								<Label text="Type of Packaging"/>
+								<Input placeholder="Enter Type of Packaging." />
+
+								<!-- Packaging Specification Marking -->
+								<Label text="Packaging Specification Marking"/>
+								<Input placeholder="Packaging Specification Marking." />
+
+								
+								<!-- Number of Packages -->
+								<Label text="Number of Packages"/>
+								<Input placeholder="Number of Packages." type="Number" />
+
+								<!-- Quantity -->
+								<Label text="Quantity (Transport Index, If Applicable)"/>
+								<Input placeholder="Quantity."/>
+
+								<!-- Air Waybill Reference Number -->
+								<Label text="Air Waybill Reference Number"/>
+								<Input placeholder="Air Waybill Reference Number." type="Number" />
+
+								<!-- Courier Pouch / Baggage Tag / Passenger Ticket Number -->
+								<Label text="Courier Pouch / Baggage Tag / Passenger Ticket Number"/>
+								<Input placeholder="Courier Pouch / Baggage Tag / Passenger Ticket Number." type="Number" />
+
+								<!-- Name and Address of Shipper/ Agent / Passenger -->
+								<Label text="Name and Address of Shipper/ Agent / Passenger"/>
+								<Input placeholder="Name and Address of Shipper/ Agent / Passenger."/>
+
+								<!-- Packaging Ok -->
+								<Label text="Packaging Ok?"/>
+								<Input placeholder="Packaging Ok."/>
+
+								<!-- Properly Secure -->
+								<Label text="Properly Secure"/>
+								<Input placeholder="Properly Secure."/>
+
+								<!-- Leakage -->
+								<Label text="Leakage"/>
+								<Input placeholder="Leakage."/>
+
+								<!-- DGR Declaration Available -->
+								<Label text="DGR Declaration Available"/>
+								<Input placeholder="DGR Declaration Available."/>
+
+								<!-- Ground Phase of Event -->
+								<Label id="groundLabel" text="Ground Phase of Event"/>
+								<ComboBox id="idSelGround" change="onGroundChange" app:mandatoryErrorMessage="Please Select a Ground Phase of Event" width="100%">
+								<items>
+									<core:Item key="A" text="Ground 1"/>
+									<core:Item key="B" text="Ground 2"/>
+								</items>
+								</ComboBox>
+
+							</VBox>
+
+							<!-- SOR -->
+
+							<VBox id="SORSection"
+								visible="{createView>/bIsSOR}">
+
+								<layoutData>
+									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
+								</layoutData>
+
+								<!-- Threat Type -->
+								<Label id="threatTypeLabel" text="Threat Type"/>
+								<ComboBox id="idSelThreatType" change="onThreatTypeChange" app:mandatoryErrorMessage="Please Select a Threat Type" width="100%">
+								<items>
+									<core:Item key="A" text="Type 1"/>
+									<core:Item key="B" text="Type 2"/>
+									<core:Item key="C" text="Type 3"/>
+									<core:Item key="D" text="Type 4"/>
+									<core:Item key="E" text="Type 5"/>
+								</items>
+							</ComboBox>
+
+								<!-- Threat Sub-Type -->
+								<Label id="threatSubTypeLabel" text="Threat Sub-Type"/>
+								<ComboBox id="idSelSubThreatType" change="onThreatSubTypeChange" app:mandatoryErrorMessage="Please Select a Threat Sub-Type" width="100%">
+								<items>
+									<core:Item key="A" text="Sub-Type 1"/>
+									<core:Item key="B" text="Sub-Type 2"/>
+									<core:Item key="C" text="Sub-Type 3"/>
+									<core:Item key="D" text="Sub-Type 4"/>
+									<core:Item key="E" text="Sub-Type 5"/>
+								</items>
+							</ComboBox>
+
+								<!-- Was an Aircraft Involved -->
+								<Label id="aircraftInvolvedLabel" text="Was an Aircraft Involved"/>
+								<RadioButtonGroup id="aircraftInvolvedRadioButton" ariaLabelledBy="aircraftInvolvedRadioButtonLabel" columns="2" select="onSelectaircraftInvolvedRadioButton">
+									<buttons>
+										<RadioButton id="aircraftInvolvedRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="aircraftInvolvedRadioButtonLabel"/>
+										<RadioButton id="aircraftInvolvedRadioButtonNo" text="No" ariaLabelledBy="aircraftInvolvedRadioButtonLabel" selected="true" />
+									</buttons>
+								</RadioButtonGroup>
+
+								<VBox id="SORAircraftInvolved" visible="false">
+								<!-- Airline -->
+								<Label text="Airline"/>
+								<ComboBox id="idSelAirline" change="onAirlineChange" app:mandatoryErrorMessage="Please Select a Airline" width="100%">
+								<items>
+									<core:Item key="A" text="Airline 1"/>
+									<core:Item key="B" text="Airline 2"/>
+								</items>
+								</ComboBox>
+
+								<!-- Flight Date -->
+								<Label text="Flight Date"/>
+								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date."/>
+								
+								<!-- Flight Number -->
+								<Label text="Flight Number"/>
+								<Input placeholder="Enter Flight Number." type="Number"/>
+
+								<!-- Aircraft Registration -->
+								<Label text="Aircraft Registration"/>
+								<Input placeholder="Enter Aircraft Registration." />
+
+								<!-- Aircraft Type -->
+								<Label text="Aircraft Type"/>
+								<Input placeholder="Enter Aircraft Type."/>
+
+								<!-- Stand -->
+								<Label text="Stand"/>
+								<Input placeholder="Enter Stand."/>
+								
+								</VBox>
+
+								
+								<!-- Was a Passenger Involved -->
+								<Label id="passengerInvolvedLabel" text="Was a Passenger Involved" />
+								<RadioButtonGroup id="passengerInvolvedRadioButton" ariaLabelledBy="passengerInvolvedRadioButtonLabel" columns="2" select="onSelectpassengerInvolvedRadioButton">
+									<buttons>
+										<RadioButton id="passengerInvolvedRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="passengerInvolvedRadioButtonLabel"/>
+										<RadioButton id="passengerInvolvedRadioButtonNo" text="No" ariaLabelledBy="passengerInvolvedRadioButtonLabel" selected="true"/>
+									</buttons>
+								</RadioButtonGroup>
+
+								<VBox id="SORPassengerInvolved" visible="false"> 
+
+								<!-- Pax Name -->
+								<Label text="Pax Name"/>
+								<Input placeholder="Enter Pax Name." />
+
+								<!-- Pax Nationality -->
+								<Label text="Pax Nationality"/>
+								<Input placeholder="Enter Pax Nationality." />
+
+								<!-- Seat Number -->
+								<Label text="Seat Number"/>
+								<Input placeholder="Enter Seat Number." type="Number"/>
+
+								<!-- Pax Contact -->
+								<Label text="Pax Contact"/>
+								<Input placeholder="Enter Pax Contact." />
+
+								<!-- Gate -->
+								<Label text="Gate"/>
+								<Input placeholder="Enter Gate." />
+
+								</VBox>
+
+							</VBox>
 
 							<!-- Occurrence Classification -->
 							<Label id="idOccurrenceClassification" labelFor="idOccurrenceClassification" required="false" text="Occurrence Classification"/>
-							<ComboBox id="idSelOccurrenceClassificatrion" change="onOccurrenceTypeChange" app:mandatoryErrorMessage="Please Select a Occurrence Classification" width="100%">
+							<ComboBox id="idSelOccurrenceClassification" change="onOccurrenceTypeChange" app:mandatoryErrorMessage="Please Select a Occurrence Classification" width="100%">
 								<items>
 									<core:Item key="A" text="A"/>
 									<core:Item key="B" text="B"/>

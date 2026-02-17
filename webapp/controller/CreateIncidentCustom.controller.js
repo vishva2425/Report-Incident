@@ -32,6 +32,9 @@ sap.ui.define([
             this.getRouter().getRoute("create")
                 .attachPatternMatched(this._onObjectMatched, this);
 
+			//Occurrence Type
+			this.byId ("idSelOccurrenceType").setVisible(true);
+
             a.defineCustomPartHandler();
 
             // Main view model
@@ -48,7 +51,9 @@ sap.ui.define([
 				bIsInjuredSickStaffDetails: false,
 				bIsPostIncidentAction: false,
 				bIsIncidentWitnessType: false,
-				bIsAnyGSEInvolvementinInjuryCase: false // ✅ Needed for GSE panel visibility
+				bIsAnyGSEInvolvementinInjuryCase: false,
+				bIsDGOR: false,
+				bIsSOR: false // ✅ Needed for GSE panel visibility
             });
 
             this.setModel(this._oViewModel, "createView");
@@ -130,18 +135,6 @@ sap.ui.define([
                         { key: "Any_GSE_Involvement_in_Injury_Case", text: "Any GSE Involvement in Injury Case" },
                     ];
                     break;
-                case 2: // DGOR
-                    aTypes = [
-                        { key: "DGOR_Type1", text: "DGOR Type 1" },
-                        { key: "DGOR_Type2", text: "DGOR Type 2" }
-                    ];
-                    break;
-                case 3: // SOR
-                    aTypes = [
-                        { key: "SOR_Type1", text: "SOR Type 1" },
-                        { key: "SOR_Type2", text: "SOR Type 2" }
-                    ];
-                    break;
                 default:
                     aTypes = [];
             }
@@ -160,7 +153,9 @@ sap.ui.define([
                 "idPanelAircraftDamageOccurrence",
                 "idPanelAircraftDamageNoticed",
                 "idPanelAircraftLoadingError",
-                "idPanelBoardingCheckInError"
+                "idPanelBoardingCheckInError",
+				"DGORSection",
+				"SORSection"
             ];
 
             aPanelIds.forEach(function (sId) {
@@ -175,7 +170,23 @@ sap.ui.define([
          * RadioButtonGroup selection handler
          */
         onCategoryChange: function (oEvent) {
-            var iSelectedIndex = oEvent.getParameter("selectedIndex");
+			var iSelectedIndex = oEvent.getParameter("selectedIndex");
+			
+			// Hide all panels
+			this._hideAllOccurrencePanels();
+
+			this.byId("idSelOccurrenceType").setVisible(true);
+
+
+			if (iSelectedIndex ===2 || iSelectedIndex ===3){
+
+				this.byId("idSelOccurrenceType").setVisible(false);
+
+				if (iSelectedIndex===2)
+					this.byId("DGORSection").setVisible(true);
+				else
+					this.byId("SORSection").setVisible(true);
+ 			}
 
             // Update ComboBox items
             this._updateOccurrenceTypes(iSelectedIndex);
@@ -185,10 +196,8 @@ sap.ui.define([
             if (oComboBox) {
                 oComboBox.setSelectedKey("");
             }
-
-            // Hide all panels
-            this._hideAllOccurrencePanels();
         },
+		
 
         /**
          * Occurrence Type ComboBox selection handler
@@ -258,6 +267,18 @@ sap.ui.define([
                 oViewModel.setProperty("/bIsAnyGSEInvolvementinInjuryCase", false);
             }
 
+			if (sText === "DGOR") {
+                oViewModel.setProperty("/bIsDGOR", true);
+            } else {
+                oViewModel.setProperty("/bIsDGOR", false);
+            }
+
+			if (sText === "SOR") {
+                oViewModel.setProperty("/bIsSOR", true);
+            } else {
+                oViewModel.setProperty("/bIsSOR", false);
+            }
+
             // Hide all panels first
             this._hideAllOccurrencePanels();
 
@@ -282,6 +303,60 @@ sap.ui.define([
                     break;
             }
         },
+
+		 onSelectaircraftInvolvedRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("SORAircraftInvolved").setVisible(true);
+		 	else
+		 		this.byId("SORAircraftInvolved").setVisible(false);
+
+		 },
+
+		 onSelectpassengerInvolvedRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("SORPassengerInvolved").setVisible(true);
+		 	else
+		 		this.byId("SORPassengerInvolved").setVisible(false);
+
+		 },
+
+		 onSelectoperatorRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("idoperatorInp").setVisible(true);
+		 	else
+		 		this.byId("idoperatorInp").setVisible(false);
+
+		 },
+
+		 onSelectaidRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("idFirstAIDProvidedName").setVisible(true);
+		 	else
+		 		this.byId("idFirstAIDProvidedName").setVisible(false);
+
+		 },
+
+		 onSelectlineRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("idLineManagerName").setVisible(true);
+		 	else
+		 		this.byId("idLineManagerName").setVisible(false);
+
+		 },
+
+		 onSelectmoreRadioButton:function (e){
+		 	var S=e.getParameter("selectedIndex");
+		 	if (S===0)
+		 		this.byId("idMore").setVisible(true);
+		 	else
+		 		this.byId("idMore").setVisible(false);
+
+		 },
 
 
 		    onBeforeRendering: function (E) {
@@ -348,6 +423,8 @@ sap.ui.define([
 		            a.saveIncident(this.getModel(), l, this.getModel(C.MODEL.APP_MODEL.NAME).getObject(C.MODEL.APP_MODEL.DATA.PICTURES), jQuery.proxy(this._onSaveSuccess, this), jQuery.proxy(this._onSaveFailed, this), h, this.getModel("device"));
 		        }
 		    },
+
+
 		    onCancel: function () {
 		        if (this.hasUserEnteredData()) {
 		            this.showDataLossDialog(this._onCreateScreenClose.bind(this));
