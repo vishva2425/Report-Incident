@@ -115,3 +115,7 @@ webapp/
 
 ---
 
+## New Incident
+<img width="1586" height="808" alt="image" src="https://github.com/user-attachments/assets/f68ce198-203c-4f21-96ca-e232b829147f" />
+
+---
