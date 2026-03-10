@@ -5,7 +5,6 @@
   "devDependencies": {
     "@sap/ui5-builder-webide-extension": "1.0.x",
     "@sap/ux-ui5-tooling": "1",
-    "@ui5/cli": "^4.0.43",
     "rimraf": "3.0.2"
   },
   "scripts": {
@@ -27,5 +26,8 @@
     "openui5",
     "sapui5"
   ],
-  "main": "webapp/index.html"
+  "main": "webapp/index.html",
+  "dependencies": {
+    "@ui5/cli": "^4.0.45"
+  }
 }

@@ -240,6 +240,7 @@ sap.ui.define([
             } else {
                 oViewModel.setProperty("/bIsBoardingCheckinError", false);
             }
+			
 
 			//HSR
 
@@ -304,23 +305,679 @@ sap.ui.define([
             }
         },
 
-		 onSelectaircraftInvolvedRadioButton:function (e){
-		 	var S=e.getParameter("selectedIndex");
-		 	if (S===0)
-		 		this.byId("SORAircraftInvolved").setVisible(true);
-		 	else
-		 		this.byId("SORAircraftInvolved").setVisible(false);
+		//  onSelectaircraftInvolvedRadioButton:function (e){
+		//  	var S=e.getParameter("selectedIndex");
+		//  	if (S===0)
+		//  		this.byId("SORAircraftInvolved").setVisible(true);
+		//  	else
+		//  		this.byId("SORAircraftInvolved").setVisible(false);
 
-		 },
+		//  },
 
-		 onSelectpassengerInvolvedRadioButton:function (e){
-		 	var S=e.getParameter("selectedIndex");
-		 	if (S===0)
-		 		this.byId("SORPassengerInvolved").setVisible(true);
-		 	else
-		 		this.byId("SORPassengerInvolved").setVisible(false);
+		 onSelectAircraftInvolvedCheckBox: function (oEvent) {
 
-		 },
+			var bSelected = oEvent.getParameter("selected");
+
+
+			if (bSelected === true) {
+				this.byId("SORAirline").setVisible(true);
+			} else {
+				this.byId("SORAirline").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORFlight").setVisible(true);
+			} else {
+				this.byId("SORFlight").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORFlightNo").setVisible(true);
+			} else {
+				this.byId("SORFlightNo").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORAircraftRegistration").setVisible(true);
+			} else {
+				this.byId("SORAircraftRegistration").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORAircraftType").setVisible(true);
+			} else {
+				this.byId("SORAircraftType").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORStand").setVisible(true);
+			} else {
+				this.byId("SORStand").setVisible(false);
+			}
+
+		},
+
+		onAddGSE: function () {
+
+    var oContainer = this.byId("gseIncidentSection");
+    var oTemplateForm = this.byId("newIncidentGSEInvolved");
+
+    // clone form
+    var oClone = oTemplateForm.clone();
+
+    // reset visibility values
+    oClone.getContent().forEach(function (control) {
+        if (control.setVisible) {
+            if (
+                control.getId().includes("GSEBelongsTo") ||
+                control.getId().includes("GSEAnyPropertyDamage") ||
+                control.getId().includes("GSEOperator") ||
+                control.getId().includes("GSEOperatorContactNumber") ||
+                control.getId().includes("GSEInvolved") ||
+                control.getId().includes("GSEStatementCheckBox")
+            ) {
+                control.setVisible(false);
+            }
+        }
+    });
+
+    // create delete button for cloned form
+    var oDeleteBox = new sap.m.HBox({
+        items: [
+            new sap.m.Button({
+                icon: "sap-icon://delete",
+                type: "Reject",
+                press: this.onDeleteGSE.bind(this)
+            })
+        ]
+    });
+
+    // add new form with delete button
+    oContainer.addItem(oDeleteBox);
+    oContainer.addItem(oClone);
+
+    sap.m.MessageToast.show("New GSE Form Added");
+},
+
+
+onDeleteGSE: function (oEvent) {
+
+    var oButton = oEvent.getSource();
+    var oHBox = oButton.getParent();
+    var oContainer = this.byId("gseIncidentSection");
+
+    // find position
+    var iIndex = oContainer.indexOfItem(oHBox);
+
+    if (iIndex !== -1) {
+
+        // remove delete button
+        oContainer.removeItem(oHBox);
+
+        // remove corresponding form
+        var oForm = oContainer.getItems()[iIndex];
+
+        if (oForm) {
+            oContainer.removeItem(oForm);
+        }
+    }
+
+    sap.m.MessageToast.show("GSE Form Deleted Successfully");
+},
+
+		onSelectGSEIncidentCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			if (bSelected === true) {
+				this.byId("GSEAddButton").setVisible(true);
+			} else {
+				this.byId("GSEAddButton").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEStatementCheckBox").setVisible(true);
+			} else {
+				this.byId("GSEStatementCheckBox").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("deleteGSEBtn").setVisible(true);
+			} else {
+				this.byId("deleteGSEBtn").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEInvolved").setVisible(true);
+			} else {
+				this.byId("GSEInvolved").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEBelongsTo").setVisible(true);
+			} else {
+				this.byId("GSEBelongsTo").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEAnyPropertyDamage").setVisible(true);
+			} else {
+				this.byId("GSEAnyPropertyDamage").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEStandNo").setVisible(true);
+			} else {
+				this.byId("GSEStandNo").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEOperator").setVisible(true);
+			} else {
+				this.byId("GSEOperator").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEOperatorContactNumber").setVisible(true);
+			} else {
+				this.byId("GSEOperatorContactNumber").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("GSEAddButton").setVisible(true);
+			} else {
+				this.byId("GSEAddButton").setVisible(false);
+			}
+
+			this.byId("GSEInvolved").setVisible(bSelected);
+			this.byId("GSEBelongsTo").setVisible(bSelected);
+			this.byId("GSEAnyPropertyDamage").setVisible(bSelected);
+			this.byId("GSEOperator").setVisible(bSelected);
+			this.byId("GSEStatementCheckBox").setVisible(bSelected);
+			this.byId("GSEOperatorContactNumber").setVisible(bSelected);
+			this.byId("GSEAddButton").setVisible(bSelected);
+
+
+		},
+
+		onSelectGSEStatementCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSEOperatorContactNumber").setVisible(true);
+			 } else {
+			 	this.byId("GSEOperatorContactNumber").setVisible(false);
+			 }
+		},
+
+		// GSE Involved Add / Delete Button Function
+
+		onAddGSE: function () {
+
+    var oView = this.getView();
+
+    var oContainer = oView.byId("gseIncidentSection");
+
+    var oTemplateForm = oView.byId("newIncidentGSEInvolved");
+
+    // clone the form
+    var oClone = oTemplateForm.clone("gseCloneForm" + this._gseFormCounter);
+
+    // make delete button visible in clone
+    var aContent = oClone.getContent();
+
+    aContent.forEach(function (oControl) {
+
+        if (oControl.getId().includes("deleteGSEBtn")) {
+            oControl.setVisible(true);
+        }
+
+        if (oControl.setValue) {
+            oControl.setValue("");
+        }
+
+        if (oControl.setSelected) {
+            oControl.setSelected(false);
+        }
+
+    });
+
+    // add cloned form before Add button row
+    oContainer.addItem(oClone);
+
+    this._gseFormCounter++;
+
+    // sap.m.MessageToast.show("New GSE Form Added");
+
+},
+
+onDeleteGSE: function (oEvent) {
+
+    var oButton = oEvent.getSource();
+
+    var oHBox = oButton.getParent();
+
+    var oForm = oHBox.getParent();
+
+    var oContainer = this.getView().byId("gseIncidentSection");
+
+    var aItems = oContainer.getItems();
+
+    if (aItems.length <= 2) {
+
+        // sap.m.MessageToast.show("At least one GSE form must remain");
+
+        return;
+    }
+
+    oContainer.removeItem(oForm);
+
+    oForm.destroy();
+
+    // sap.m.MessageToast.show("GSE Form Deleted");
+
+},
+
+
+	// Aircraft Damage Occurrence Add / Delete Function
+
+		onAddGSEDamage: function () {
+
+    var oView = this.getView();
+
+    var oContainer = oView.byId("aircraftDamageOccurrenceSection");
+
+    var oTemplateForm = oView.byId("newIncidentAircraftDamageOcc");
+
+    // clone the form
+    var oClone = oTemplateForm.clone("gseCloneForm" + this._gseFormCounter);
+
+    // make delete button visible in clone
+    var aContent = oClone.getContent();
+
+    aContent.forEach(function (oControl) {
+
+        if (oControl.getId().includes("deleteGSEDamageBtn")) {
+            oControl.setVisible(true);
+        }
+
+        if (oControl.setValue) {
+            oControl.setValue("");
+        }
+
+        if (oControl.setSelected) {
+            oControl.setSelected(false);
+        }
+
+    });
+
+    // add cloned form before Add button row
+    oContainer.addItem(oClone);
+
+    this._gseFormCounter++;
+
+    // sap.m.MessageToast.show("New GSE Form Added");
+
+},
+
+onDeleteGSEDamage: function (oEvent) {
+
+    var oButton = oEvent.getSource();
+
+    var oHBox = oButton.getParent();
+
+    var oForm = oHBox.getParent();
+
+    var oContainer = this.getView().byId("aircraftDamageOccurrenceSection");
+
+    var aItems = oContainer.getItems();
+
+    if (aItems.length <= 2) {
+
+        // sap.m.MessageToast.show("At least one GSE form must remain");
+
+        return;
+    }
+
+    oContainer.removeItem(oForm);
+
+    oForm.destroy();
+
+    // sap.m.MessageToast.show("GSE Form Deleted");
+
+},
+
+
+	// Aircraft Noticed 
+
+		onAddGSENoticed: function () {
+
+    var oView = this.getView();
+
+    var oContainer = oView.byId("aircraftDamageNoticedSection");
+
+    var oTemplateForm = oView.byId("newIncidentAircraftNoticed");
+
+    // clone the form
+    var oClone = oTemplateForm.clone("gseCloneForm" + this._gseFormCounter);
+
+    // make delete button visible in clone
+    var aContent = oClone.getContent();
+
+    aContent.forEach(function (oControl) {
+
+        if (oControl.getId().includes("onDeleteGSENoticed")) {
+            oControl.setVisible(true);
+        }
+
+        if (oControl.setValue) {
+            oControl.setValue("");
+        }
+
+        if (oControl.setSelected) {
+            oControl.setSelected(false);
+        }
+
+    });
+
+    // add cloned form before Add button row
+    oContainer.addItem(oClone);
+
+    this._gseFormCounter++;
+
+    // sap.m.MessageToast.show("New GSE Form Added");
+
+},
+
+onDeleteGSENoticed: function (oEvent) {
+
+    var oButton = oEvent.getSource();
+
+    var oHBox = oButton.getParent();
+
+    var oForm = oHBox.getParent();
+
+    var oContainer = this.getView().byId("aircraftDamageNoticedSection");
+
+    var aItems = oContainer.getItems();
+
+    if (aItems.length <= 2) {
+
+        // sap.m.MessageToast.show("At least one GSE form must remain");
+
+        return;
+    }
+
+    oContainer.removeItem(oForm);
+
+    oForm.destroy();
+
+    // sap.m.MessageToast.show("GSE Form Deleted");
+
+},
+
+
+		onSelectGSEMaterialCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSEReleaseType").setVisible(true);
+			 } else {
+			 	this.byId("GSEReleaseType").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEReleasedMaterial").setVisible(true);
+			 } else {
+			 	this.byId("GSEReleasedMaterial").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEReleasedAmount").setVisible(true);
+			 } else {
+			 	this.byId("GSEReleasedAmount").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEUnitofMeasurement").setVisible(true);
+			 } else {
+			 	this.byId("GSEUnitofMeasurement").setVisible(false);
+			 }
+
+		},
+
+		onSelectGSEAircraftDamageCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("deleteGSEDamageBtn").setVisible(true);
+			 } else {
+			 	this.byId("deleteGSEDamageBtn").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageInvolved").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageInvolved").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageBelongsTo").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageBelongsTo").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageAnyPropertyDamage").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageAnyPropertyDamage").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageOperator").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageOperator").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageStatementCheckBox").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageStatementCheckBox").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageAddButton").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageAddButton").setVisible(false);
+			 }
+		},
+
+		onSelectGSEDamageStatementCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSEDamageOperatorContactNumber").setVisible(true);
+			 } else {
+			 	this.byId("GSEDamageOperatorContactNumber").setVisible(false);
+			 }
+			
+		},
+
+
+		onSelectGSEAircraftLoadingCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSEAircraftLoadingFlown").setVisible(true);
+			 } else {
+			 	this.byId("GSEAircraftLoadingFlown").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEAircraftLoadingWeightDifference").setVisible(true);
+			 } else {
+			 	this.byId("GSEAircraftLoadingWeightDifference").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEAircraftLoadingOrigin").setVisible(true);
+			 } else {
+			 	this.byId("GSEAircraftLoadingOrigin").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEAircraftLoadingDestination").setVisible(true);
+			 } else {
+			 	this.byId("GSEAircraftLoadingDestination").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSEAircraftLoadingSchedulesDep").setVisible(true);
+			 } else {
+			 	this.byId("GSEAircraftLoadingSchedulesDep").setVisible(false);
+			 }
+
+		},
+
+		onSelectGSEAircraftNoticedCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("deleteGSENoticedBtn").setVisible(true);
+			 } else {
+			 	this.byId("deleteGSENoticedBtn").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedInvolved").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedInvolved").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedBelongsTo").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedBelongsTo").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedAnyPropertyDamage").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedAnyPropertyDamage").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedOperator").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedOperator").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedAnyPropertyDamage").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedAnyPropertyDamage").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedOperator").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedOperator").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedStatementCheckBox").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedStatementCheckBox").setVisible(false);
+			 }
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedAddButton").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedAddButton").setVisible(false);
+			 }
+
+		},
+
+		onSelectGSENoticedStatementCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSENoticedOperatorContactNumber").setVisible(true);
+			 } else {
+			 	this.byId("GSENoticedOperatorContactNumber").setVisible(false);
+			 }
+
+		},
+
+		onSelectGSEBoardingErrorCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			 if (bSelected === true) {
+			 	this.byId("GSEBoardingErrorFlown").setVisible(true);
+			 } else {
+			 	this.byId("GSEBoardingErrorFlown").setVisible(false);
+			 }
+
+		},
+
+		onSelectpassengerInvolvedCheckBox: function (oEvent) {
+
+			var bSelected = oEvent.getParameter("selected");
+
+			// if (bSelected === true) {
+			// 	this.byId("SORPassengerInvolved").setVisible(true);
+			// } else {
+			// 	this.byId("SORPassengerInvolved").setVisible(false);
+			// }
+
+			if (bSelected === true) {
+				this.byId("SORPaxName").setVisible(true);
+			} else {
+				this.byId("SORPaxName").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORPaxNationality").setVisible(true);
+			} else {
+				this.byId("SORPaxNationality").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORSeatNumber").setVisible(true);
+			} else {
+				this.byId("SORSeatNumber").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORPaxContact").setVisible(true);
+			} else {
+				this.byId("SORPaxContact").setVisible(false);
+			}
+
+			if (bSelected === true) {
+				this.byId("SORGate").setVisible(true);
+			} else {
+				this.byId("SORGate").setVisible(false);
+			}
+
+		},
+
+		//  onSelectpassengerInvolvedRadioButton:function (e){
+		//  	var S=e.getParameter("selectedIndex");
+		//  	if (S===0)
+		//  		this.byId("SORPassengerInvolved").setVisible(true);
+		//  	else
+		//  		this.byId("SORPassengerInvolved").setVisible(false);
+
+		//  },
 
 		 onSelectoperatorRadioButton:function (e){
 		 	var S=e.getParameter("selectedIndex");

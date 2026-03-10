@@ -1,8 +1,3 @@
-<!--
-
-    Copyright (C) 2009-2023 SAP SE or an SAP affiliate company. All rights reserved.
-
--->
 <mvc:View xmlns:odata="sap.ui.comp.odata" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.m.semantic" xmlns:form="sap.ui.layout.form"
 	xmlns:layout="sap.ui.layout" xmlns:unified="sap.ui.unified" xmlns="sap.m"
 	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
@@ -12,6 +7,8 @@
 		<semantic:content>
 			<layout:VerticalLayout id="idVerticalLayoutNewIncidentForm" class="sapUiResponsiveContentPadding" width="100%">
 				<layout:content>
+
+				<VBox renderType="Bare" class="noGapBox">
 					<form:SimpleForm id="newIncidentForm" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
 						labelSpanL="3" emptySpanL="4" title="{= ${appView>/sScreenSize} === 'Phone' ? '' : ${path: 'i18n>incidentInformationFormTitle'}}"
 						width="100%">
@@ -221,36 +218,9 @@
 									<RadioButton id="groupRadioButtonNo" text="{i18n>no}" ariaLabelledBy="releaseRadioButtonLabel"/>
 								</buttons>
 							</RadioButtonGroup>
-							<!-- <VBox id="groupContainer" visible="{appView>/data/bIsGroupsInvolved}">
-								<layoutData>
-									<layout:GridData id="idGridDataGroups" indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
-								<MultiComboBox id="mcGroup" app:mandatoryErrorMessage="{i18n>noGroupsSelected}" app:mandatoryErrorDescription="{i18n>noGroupsSelectedLong}"
-									placeholder="{i18n>selectCircumstances}" items="{ path: '/I_IncidentGroupUnion'}">
-									<core:Item id="idItemIncidentGroupCode" key="{IncidentGroupCode}" text="{IncidentGroupCode_Text}"/>
-								</MultiComboBox>
-							</VBox>
-							<Label id="estRiskTypeLabel" text="{i18n>estimatedRisk}" labelFor="estRiskType"/>
-							<ComboBox id="estRiskType" placeholder="{i18n>selectEstRisk}" items="{path: '/EstRiskTypes',sorter: { path: 'Description' }}"
-								visible="{appView>/data/bIsGroupsInvolved}" change="onChangeEstRiskType">
-								<core:Item id="idItemEstRiskType" key="{Code}" text="{Description}"/>
-							</ComboBox> -->
 							
 							<!-- Extension point for adding new sections in the Report Incident view. -->
 							<core:ExtensionPoint name="CustomerExtensionForCreateIncident"/>
-
-							<!-- Classification  -->
-							<!-- <Label id="classification" text="Classification"
-								required="true" labelFor="mcGroup"/>
-							<RadioButtonGroup id="classificationRadioButton" ariaLabelledBy="classificationRadioButton"
-								visible="{=${Classification}!==${constants>/MODEL/ODATA/INC_CAT_INC}}"  columns="4" select="onSelectGroupRadioButton">
-								<buttons>
-									<RadioButton id="GOR" class="sapUiMediumMarginEnd" text="GOR" ariaLabelledBy="classificationRadioButton"/>
-									<RadioButton id="HSR" class="sapUiMediumMarginEnd" text="HSR" ariaLabelledBy="classificationRadioButton"/>
-									<RadioButton id="DGOR" class="sapUiMediumMarginEnd" text="DGOR" ariaLabelledBy="classificationRadioButton"/>
-									<RadioButton id="SOR" class="sapUiMediumMarginEnd" text="SOR" ariaLabelledBy="classificationRadioButton"/>
-								</buttons>
-							</RadioButtonGroup> -->
 
 							<!-- Contact Number  -->
 							<Label id="idConactNumber" labelFor="idContactNumber" text="Contact Number"/>
@@ -260,60 +230,33 @@
 
 							<!-- Reporting Person -->
 							<Label id="idLabelReportingPerson" labelFor="idReportingPerson" text="Reporting Person"/>
-							<Input id="idReportingPerson" placeholder="Select Reporting Person." showValueHelp="true" value="{appView>/data/sLocationName}"
-								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
-								filterSuggests="false">
-								<suggestionColumns>
-									<Column id="idColumnReportingPersonName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelReportingPersonName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
-									</Column>
-									<Column id="idColumnReportingPersonId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelReportingPersonId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
-									</Column>
-									<Column id="idColumnReportingPersonType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelReportingPersonType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
-									</Column>
-								</suggestionColumns>
-							</Input>
+								<ComboBox id="reportingPerson" width="100%"
+									placeholder="Select Reporting Person."
+									items="">
+									<core:Item key="{ReportingPersonId}" text="{ReportingPersonName}"/>
+								</ComboBox>
 
-							<!-- Date and Time of the Incident -->
-							<!-- <Label id="idLabelDateTimeIncident" labelFor="idDateTimeIncident" text="Date and Time of the Incident"/>
-							<DateTimePicker id="idDateTimeIncident"
-								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
-								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="Select a Date and Time of Incident."/> -->
+							<!-- Reported Person Contact Number -->
+							<Label id="idReportedContactNumber" labelFor="idReportedContactNumber" text="Reported Person Contact Number"/>
+							<Input id="idInpReportedContactNumber" placeholder="Enter Reported Contact Number." value="" 
+							visible="{=${ReportedContactNumber}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
+								app:mandatoryErrorMessage="Please Enter the Reported Contact Number" width="100%"/>
 
 							<!-- Reported Station -->
 							<Label id="idReportedStation" labelFor="idReportedStation" text="Reported Station"/>
-							<Input id="idInpReportedStation" placeholder="Enter Reported Station." value="" 
-							visible="{=${ReportedStation}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
-								app:mandatoryErrorMessage="Please Enter the Reported Station" width="100%"/>
-
-							<!-- Location -->
-							<!-- <Label id="idLabelLocation" labelFor="idLocation" text="Location"/>
-							<Input id="idInpLocation" placeholder="Select a Location." showValueHelp="true" value="{appView>/data/sLocationName}"
-								showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
-								filterSuggests="false">
-								<suggestionColumns>
-									<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
-									</Column>
-									<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
-									</Column>
-									<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-										<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
-									</Column>
-								</suggestionColumns>
-							</Input> -->
-
+								<ComboBox id="reportingStation"
+									placeholder="Select Reporting Station."
+									items="">
+									<core:Item key="{ReportingStationId}" text="{ReportingStationName}"/>
+								</ComboBox>
 							<!-- Was there any evidence -->
 							<Label id="idEvidence" labelFor="idEvidence" text="Was there any evidence"/>
 							<Input id="idInpEvidence" placeholder="Enter the Evidence Name." value="" 
 							visible="{=${Evidence}!==${constants>/MODEL/ODATA/INC_CAT_INC}}" 
 								app:mandatoryErrorMessage="Please Enter the Reported Station" width="100%"/>
 
-							<!-- ================= Classification ================= -->
-							<Label text="Classification" required="true" />
+						<!-- ================= Incident Classification ================= -->
+							<Label text="Incident Classification" required="true" />
 
 									<RadioButtonGroup
 										id="classificationRadioButton"
@@ -328,7 +271,9 @@
 										</buttons>
 									</RadioButtonGroup>
 
+
 									<!-- ================= Occurrence Type ================= -->
+
 							<Label text="Occurrence Type" required="true" />
 
 									<ComboBox
@@ -345,278 +290,641 @@
 
 									</ComboBox>
 
+							
+							<!-- Occurrence Classification -->
+							<Label id="idOccurrenceClassification" labelFor="idOccurrenceClassification" required="false" text="Occurrence Classification"/>
+							<ComboBox id="idSelOccurrenceClassification" change="onOccurrenceTypeChange" app:mandatoryErrorMessage="Please Select a Occurrence Classification" width="100%">
+								<items>
+									<core:Item key="A" text="Class 1"/>
+									<core:Item key="B" text="Class 2"/>
+									<core:Item key="C" text="Class 3"/>
+									<core:Item key="D" text="Class 4"/>
+									<core:Item key="E" text="Class 5"/>
+								</items>
+							</ComboBox>
+					</form:content>
+					</form:SimpleForm>
+
 							<!-- GOR Drop Down Items -->
 
 							<!-- GSE Incident -->
 
-							<VBox id="gseIncidentSection"
-								visible="{createView>/bIsGSEIncident}">
+								<!-- <VBox id="SORAircraftInvolved" > -->
+								<VBox id="gseIncidentSection"
+								visible="{createView>/bIsGSEIncident}" >
+								<Title text="GSE Incident" />
 
-								<layoutData>
-									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentGSEInvolved" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" >
+								<form:content>
+
+								<Label id="GSEIncidentLabel" text="Any GSE Involved?"/>
+								<CheckBox 
+									id="GSEIncidentCheckBox"
+									select="onSelectGSEIncidentCheckBox" /> 
+
+								<HBox>
+									<Button
+										id="deleteGSEBtn" visible="false"
+										icon="sap-icon://delete"
+										type="Reject"
+										press="onDeleteGSE"
+										class="sapUiTinyMarginEnd"/> 
+								</HBox>
 
 								<!-- GSE Involved -->
-								<Label text="GSE Involved" required="true"/>
-								<FlexBox alignItems="Center">
-									<ComboBox id="gseInvolved"
-										placeholder="Select GSE Asset."
-										items="">
-										<core:Item key="{AssetId}" text="{AssetName}"/>
-									</ComboBox>
-									<Button text="Add Multiple Assets"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultipleAssets"/>
+							<Label id="gseInvolvedLabel" text="GSE Involved" required="{appView>/data/bIsGSEInvolved}" labelFor="gseInvolvedContainer"/>
+							<VBox id="GSEInvolved" visible="false" fieldGroupIds="gseInvolvedInputFilterGroup">
+								<FlexBox id="gseInvolvedInputContainer" fieldGroupIds="gseInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }"  fieldGroupIds="gseInvolvedInputFilterGroup"  
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataGSEInvolved" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentGSEInvolvedNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSEInvolvedNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentGSEInvolvedWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSEInvolvedWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
 								</FlexBox>
-
+								</VBox>
+	
 								<!-- GSE Belongs To -->
 								<Label text="GSE Belongs To"/>
-								<Input placeholder="Enter GSE Belongs To."/>
+								<Input placeholder="Enter GSE Belongs To." id="GSEBelongsTo" visible="false" />
 
 								<!-- Property Damage -->
 								<Label text="Any Property Damage"/>
 								<Input
-									placeholder="Enter property damage details."/>
+									placeholder="Enter property damage." id="GSEAnyPropertyDamage" visible="false" />
+
+								<!-- Operator -->
+								<Label text="Operator"/>
+								<Input placeholder="Enter Operator." id="GSEOperator" visible="false"/>
+
+								<Label id="GSEStatementLabel" text="Operator Statement Available?"/>
+								<CheckBox 
+									id="GSEStatementCheckBox"
+									select="onSelectGSEStatementCheckBox" visible="false" /> 
+
+								<!-- Operator Contact Number -->
+								<Label text="Operator Contact Number"/>
+								<Input placeholder="Enter Operator Contact Number." type="Number" id="GSEOperatorContactNumber" visible="false"/>
+								</form:content>
+								</form:SimpleForm>
+							
+								<HBox justifyContent="End" class="sapUiSmallMarginTop">
+									<Button
+										text="Add GSE"
+										icon="sap-icon://add"
+										type="Emphasized"
+										id="GSEAddButton" visible="false"
+										press="onAddGSE"/>
+
+								</HBox>
+							</VBox>
+
+								<VBox id="gseIncidentSection2"
+								visible="{createView>/bIsGSEIncident}" >
+								<form:SimpleForm id="newIncidentGSEInc" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4"
+									width="100%">
+								<form:content>
+								
+								<!-- Stand No -->
+								<!-- <Label text="Stand No"/>
+								<Input placeholder="Enter Stand No." type="Number" id="GSEStandNo" visible="false"/> -->
 
 								<!-- Was any Material Released -->
-								<Label text="Was any Material Released"/>
-								<RadioButtonGroup id="materialRadioButton" ariaLabelledBy="materialRadioButtonLabel" columns="2" select="onSelectmaterialRadioButton">
-									<buttons>
-										<RadioButton id="materialRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="materialRadioButtonLabel"/>
-										<RadioButton id="materialRadioButtonNo" text="No" ariaLabelledBy="materialRadioButtonLabel" selected="true" />
-									</buttons>
-								</RadioButtonGroup>
+								<Label id="GSEMaterialLabel" text="Was Material Released?"/>
+								<CheckBox 
+									id="GSEMaterialCheckBox"
+									select="onSelectGSEMaterialCheckBox" />
 
-								<!-- Location Details -->
-								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand Number." type="Number"/>
+								<!-- Release Type -->
+								<Label text="Release Type"/>
+								<Input placeholder="Enter Release Type." id="GSEReleaseType" visible="false"/>
 
-								<!-- Persons -->
-								<Label text="Involved Staff"/>
-								<FlexBox alignItems="Center">
-									<MultiComboBox placeholder="Select Staff"/>
-									<Button text="Add Multiple Persons"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultiplePersons"/>
+								<!-- Release Material -->
+								<Label text="Released Material"/>
+								<Input placeholder="Enter Released Material." id="GSEReleasedMaterial" visible="false"/>
+
+								<!-- Release Amount -->
+								<Label text="Released Amount"/>
+								<Input placeholder="Enter Released Amount." id="GSEReleasedAmount" visible="false"/>
+
+								<!-- Unit of Measurement -->
+								<Label text="Unit of Measurement"/>
+								<Input placeholder="Enter Unit of Measurement." id="GSEUnitofMeasurement" visible="false"/>
+ 
+								<!-- Staff Involved -->
+							<Label id="staffInvolvedLabel" text="Staff Involved" required="{appView>/data/bIsStaffInvolved}" labelFor="staffInvolvedContainer"/>
+							<VBox id="staffInvolvedContainer" visible="{appView>/data/bIsStaffInvolved}" fieldGroupIds="staffInvolvedInputFilterGroup">
+								<FlexBox id="staffInvolvedInputContainer" fieldGroupIds="staffInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="staffInvolvedInput" fieldGroupIds="staffInvolvedInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataStaffInvolved" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentStaffInvolvedNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentStaffInvolvedWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForStaffInvolved" press="_onDeleteStaffInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
 								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForStaffInvolved"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>Staff'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
 							</VBox>
+
+								</form:content>
+								</form:SimpleForm>
+							</VBox>
+
+							
 							<!-- Aircraft Damage Occurrence Involved -->
 
 							<VBox id="aircraftDamageOccurrenceSection"
 								visible="{createView>/bIsaircraftDamageOccurrence}">
 
-								<layoutData>
-									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentAircraftDamage" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Aircraft Damage Occurrence"
+									width="100%">
+								<form:content>
 
 								<!-- Airline Involved -->
-								<Label text="Airline Involved"/>
-								<Input placeholder="Enter Airline Involved."/>
+								<Label id="idAirlineInvolved" labelFor="idAirlineInvolved" required="true" text="Airline Involved"/>
+								<ComboBox id="idSelAirlineInvolved" change="onAirlineInvolvedTypeChange" app:mandatoryErrorMessage="Please Select a Airline Involved" width="100%">
+									<items>
+										<core:Item key="A" text="Airline 1"/>
+										<core:Item key="B" text="Airline 2"/>
+										<core:Item key="C" text="Airline 3"/>
+										<core:Item key="D" text="Airline 4"/>
+										<core:Item key="E" text="Airline 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Flight NO -->
-								<Label text="Flight Number"/>
+								<Label text="Flight No"/>
 								<Input placeholder="Enter Flight No." type="Number"/>
-
+							
 								<!-- Aircraft Type -->
-								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
+								<Label id="idAircraft" labelFor="idAircraft" required="false" text="Aircraft Type"/>
+								<ComboBox id="idSelAircraft" change="onAircraftTypeChange" app:mandatoryErrorMessage="Please Select a Aircraft Type" width="100%">
+									<items>
+										<core:Item key="A" text="Aircraft 1"/>
+										<core:Item key="B" text="Aircraft 2"/>
+										<core:Item key="C" text="Aircraft 3"/>
+										<core:Item key="D" text="Aircraft 4"/>
+										<core:Item key="E" text="Aircraft 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Registration -->
 								<Label text="Registration"/>
 								<Input placeholder="Enter Registration."/>
 
 								<!-- Stand No -->
-								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand No." type="Number" />
+								<!-- <Label text="Stand No"/>
+								<Input placeholder="Enter Stand No." type="Number" /> -->
 
 								<!-- Involved Staff -->
-								<Label text="Involved Staff"/>
-								<FlexBox alignItems="Center">
-									<MultiComboBox placeholder="Select Staff"/>
-									<Button text="Add Multiple Persons"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultiplePersons"/>
+							<Label id="staffInvolvedOccLabel" text="Staff Involved" required="{appView>/data/bIsStaffInvolved}" labelFor="staffInvolvedContainer"/>
+							<VBox id="staffInvolvedOccContainer" visible="{appView>/data/bIsStaffInvolved}" fieldGroupIds="staffInvolvedInputFilterGroup">
+								<FlexBox id="staffInvolvedOccInputContainer" fieldGroupIds="staffInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="staffInvolvedOccInput" fieldGroupIds="staffInvolvedInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataStaffInvolvedOcc" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentStaffInvolvedOccNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedOccNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentStaffInvolvedOccWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedOccWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForStaffInvolvedOcc" press="_onDeleteStaffInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
 								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForStaffInvolvedOcc"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>Staff'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
 
 								<!-- Operations Phase -->
-								<Label text="Operations Phase"/>
-								<Input placeholder="Enter Operations Phase."/>
+								<Label id="idOperation" labelFor="idOperation" required="false" text="Operation Phase"/>
+								<ComboBox id="idSelOperation" change="onOperationTypeChange" app:mandatoryErrorMessage="Please Select a Operation Phase" width="100%">
+									<items>
+										<core:Item key="A" text="Operation 1"/>
+										<core:Item key="B" text="Operation 2"/>
+										<core:Item key="C" text="Operation 3"/>
+										<core:Item key="D" text="Operation 4"/>
+										<core:Item key="E" text="Operation 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Origin -->
-								<Label text="Origin"/>
-								<Input placeholder="Enter Origin."/>
+								<Label id="idOrigin" labelFor="idOrigin" required="false" text="Origin"/>
+								<ComboBox id="idSelOrigin" change="onOriginTypeChange" app:mandatoryErrorMessage="Please Select a Origin" width="100%">
+									<items>
+										<core:Item key="A" text="Origin 1"/>
+										<core:Item key="B" text="Origin 2"/>
+										<core:Item key="C" text="Origin 3"/>
+										<core:Item key="D" text="Origin 4"/>
+										<core:Item key="E" text="Origin 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Destination -->
-								<Label text="Destination"/>
-								<Input placeholder="Enter Destination."/>
+								<Label id="idDestination" labelFor="idDestination" required="false" text="Destination"/>
+								<ComboBox id="idSelDestination" change="onDestinationTypeChange" app:mandatoryErrorMessage="Please Select a Destination" width="100%">
+									<items>
+										<core:Item key="A" text="Destination 1"/>
+										<core:Item key="B" text="Destination 2"/>
+										<core:Item key="C" text="Destination 3"/>
+										<core:Item key="D" text="Destination 4"/>
+										<core:Item key="E" text="Destination 5"/>
+									</items>
+								</ComboBox>
 
-								<!-- Scheduled Dep -->
-								<Label text="Scheduled Dep"/>
-								<Input placeholder="Enter Scheduled Dep."/>
+								<!-- Scheduled Departure -->
+								<Label id="idScheduledDateTimePicker" labelFor="idDateTimePicker" required="false" text="Scheduled Departure"/>
+								<DateTimePicker id="idScheduledDepartureDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
 
-								<!-- Actual Dep -->
-								<Label text="Actual Dep"/>
-								<Input placeholder="Enter Actual Dep."/>
+								<!-- Actual Departure -->
+								<Label id="idActualDateTimePicker" labelFor="idDateTimePicker" required="false" text="Actual Departure"/>
+								<DateTimePicker id="idActualDepartureDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
+								</form:content>
+								</form:SimpleForm>
+
+								<form:SimpleForm id="newIncidentAircraftDamageOcc" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" columnsL="1"
+									labelSpanL="3" 
+									width="100%">
+								<form:content>
+								
+								<Label id="GSEAircraftDamageLabel" text="Any GSE Involved?"/>
+								<CheckBox 
+									id="GSEAircraftDamageCheckBox"
+									select="onSelectGSEAircraftDamageCheckBox" /> 
 
 								<!-- GSE Involved -->
-								<Label text="GSE Involved" required="true"/>
-								<FlexBox alignItems="Center">
-									<ComboBox id="gseInvolvedOccurrence"
-										placeholder="Select GSE Involved."
-										items="">
-										<core:Item key="{AssetId}" text="{AssetName}"/>
-									</ComboBox>
-									<Button text="Add Multiple Assets"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultipleAssets"/>
-								</FlexBox>
+							<HBox>
+									<Button
+										id="deleteGSEDamageBtn" visible="false"
+										icon="sap-icon://delete"
+										type="Reject"
+										press="onDeleteGSEDamage"
+										class="sapUiTinyMarginEnd"/> 
+								</HBox>
 
+								<!-- GSE Involved -->
+							<Label id="gseDamageInvolvedLabel" text="GSE Damage Occurrence" required="{appView>/data/bIsGSEInvolved}" labelFor="gseInvolvedContainer"/>
+							<VBox id="GSEDamageInvolved" visible="false" fieldGroupIds="gseInvolvedInputFilterGroup">
+								<FlexBox id="gseDamageInvolvedInputContainer" fieldGroupIds="gseInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }"  fieldGroupIds="gseInvolvedInputFilterGroup"  
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataGSEDamageInvolved" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentGSEDamageInvolvedNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSEDamageInvolvedNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentGSEDamageInvolvedWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSEDamageInvolvedWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForGSEDamageInvolved" press="_onDeleteGSEInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForGSEDamageInvolved"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>GSE'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
+	
+								<!-- GSE Belongs To -->
+								<Label text="GSE Belongs To"/>
+								<Input placeholder="Enter GSE Belongs To." id="GSEDamageBelongsTo" visible="false" />
+
+								<!-- Property Damage -->
+								<Label text="Any Property Damage"/>
+								<Input
+									placeholder="Enter property damage." id="GSEDamageAnyPropertyDamage" visible="false" />
+
+								<!-- Operator -->
+								<Label text="Operator"/>
+								<Input placeholder="Enter Operator." id="GSEDamageOperator" visible="false"/>
+
+								<Label id="GSEDamageStatementLabel" text="Operator Statement Available?"/>
+								<CheckBox 
+									id="GSEDamageStatementCheckBox"
+									select="onSelectGSEDamageStatementCheckBox" visible="false" /> 
+
+								<!-- Operator Contact Number -->
+								<Label text="Operator Contact Number"/>
+								<Input placeholder="Enter Operator Contact Number." type="Number" id="GSEDamageOperatorContactNumber" visible="false"/>
+								</form:content>
+								</form:SimpleForm>
+							
+								<HBox justifyContent="End" class="sapUiSmallMarginTop">
+									<Button
+										text="Add GSE"
+										icon="sap-icon://add"
+										type="Emphasized"
+										id="GSEDamageAddButton" visible="false"
+										press="onAddGSEDamage"/>
+
+								</HBox>
 							</VBox>
 
 
-							<!-- Aircraft Damage Noticed Involved -->
+							<!-- Aircraft Damage Noticed -->
 
 							<VBox id="aircraftDamageNoticedSection"
 								visible="{createView>/bIsaircraftDamageNoticed}">
 
-								<layoutData>
-									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentAircraftDamageSection" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Aircraft Damage Notified"
+									width="100%">
+								<form:content>
 
 								<!-- Airline Involved -->
-								<Label text="Airline Involved"/>
-								<Input placeholder="Enter Airline Involved."/>
+								<Label id="idAirlineInvolvedNoticed" labelFor="idAirlineInvolvedNoticed" required="false" text="Airline Involved"/>
+								<ComboBox id="idSelAirlineInvolvedNoticed" change="onAirlineInvolvedNoticedTypeChange" app:mandatoryErrorMessage="Please Select a Airline Damage Notified" width="100%">
+									<items>
+										<core:Item key="A" text="Airline 1"/>
+										<core:Item key="B" text="Airline 2"/>
+										<core:Item key="C" text="Airline 3"/>
+										<core:Item key="D" text="Airline 4"/>
+										<core:Item key="E" text="Airline 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Flight NO -->
-								<Label text="Flight Number"/>
-								<Input placeholder="Enter Flight No." type="Number" />
-
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No." type="Number"/>
+							
 								<!-- Aircraft Type -->
-								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
+								<Label id="idAircraftNoticed" labelFor="idAircraftNoticed" required="false" text="Aircraft Type"/>
+								<ComboBox id="idSelAircraftNoticed" change="onAircraftNoticedTypeChange" app:mandatoryErrorMessage="Please Select a Aircraft Type" width="100%">
+									<items>
+										<core:Item key="A" text="Aircraft 1"/>
+										<core:Item key="B" text="Aircraft 2"/>
+										<core:Item key="C" text="Aircraft 3"/>
+										<core:Item key="D" text="Aircraft 4"/>
+										<core:Item key="E" text="Aircraft 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Registration -->
 								<Label text="Registration"/>
 								<Input placeholder="Enter Registration."/>
 
 								<!-- Stand No -->
-								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand No." type="Number" />
+								<!-- <Label text="Stand No"/>
+								<Input placeholder="Enter Stand No." type="Number" /> -->
 
 								<!-- Involved Staff -->
-								<Label text="Involved Staff"/>
-								<FlexBox alignItems="Center">
-									<MultiComboBox placeholder="Select Staff"/>
-									<Button text="Add Multiple Persons"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultiplePersons"/>
+							<Label id="staffInvolvedNoticedLabel" text="Staff Involved" required="{appView>/data/bIsStaffInvolved}" labelFor="staffInvolvedContainer"/>
+							<VBox id="staffInvolvedNoticedContainer" visible="{appView>/data/bIsStaffInvolved}" fieldGroupIds="staffInvolvedInputFilterGroup">
+								<FlexBox id="staffInvolvedNoticedInputContainer" fieldGroupIds="staffInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="staffInvolvedNoticedInput" fieldGroupIds="staffInvolvedInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataStaffInvolvedNoticed" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentStaffInvolvedNoticedNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedNoticedNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentStaffInvolvedNoticedWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedNoticedWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForStaffInvolvedNoticed" press="_onDeleteStaffInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
 								</FlexBox>
-
-								<!-- Operations Phase -->
-								<Label text="Operations Phase"/>
-								<Input placeholder="Enter Operations Phase."/>
-
-								<!-- Origin -->
-								<Label text="Origin"/>
-								<Input placeholder="Enter Origin."/>
-
-								<!-- Destination -->
-								<Label text="Destination"/>
-								<Input placeholder="Enter Destination."/>
-
-								<!-- Scheduled Dep -->
-								<Label text="Scheduled Dep"/>
-								<Input placeholder="Enter Scheduled Dep."/>
-
-								<!-- GSE Involved -->
-								<Label text="GSE Involved" required="true"/>
-								<FlexBox alignItems="Center">
-									<ComboBox id="gseInvolvedNoticed"
-										placeholder="Select GSE Involved."
-										items="">
-										<core:Item key="{AssetId}" text="{AssetName}"/>
-									</ComboBox>
-									<Button text="Add Multiple Assets"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultipleAssets"/>
-								</FlexBox>
-
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForStaffInvolvedNoticed"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>Staff'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
 							</VBox>
 
-							<!-- Aircraft Loading Error Involved -->
+								<!-- Operations Phase -->
+								<Label id="idOperationNoticed" labelFor="idOperationNoticed" required="false" text="Operation Phase"/>
+								<ComboBox id="idSelOperationNoticed" change="onOperationNoticedTypeChange" app:mandatoryErrorMessage="Please Select a Operation Phase" width="100%">
+									<items>
+										<core:Item key="A" text="Operation 1"/>
+										<core:Item key="B" text="Operation 2"/>
+										<core:Item key="C" text="Operation 3"/>
+										<core:Item key="D" text="Operation 4"/>
+										<core:Item key="E" text="Operation 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Origin -->
+								<Label id="idOriginNoticed" labelFor="idOriginNoticed" required="false" text="Origin"/>
+								<ComboBox id="idSelOriginNoticed" change="onOriginNoticedTypeChange" app:mandatoryErrorMessage="Please Select a Origin" width="100%">
+									<items>
+										<core:Item key="A" text="Origin 1"/>
+										<core:Item key="B" text="Origin 2"/>
+										<core:Item key="C" text="Origin 3"/>
+										<core:Item key="D" text="Origin 4"/>
+										<core:Item key="E" text="Origin 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Destination -->
+								<Label id="idDestinationNoticed" labelFor="idDestinationNoticed" required="false" text="Destination"/>
+								<ComboBox id="idSelDestinationNoticed" change="onDestinationNoticedTypeChange" app:mandatoryErrorMessage="Please Select a Destination" width="100%">
+									<items>
+										<core:Item key="A" text="Destination 1"/>
+										<core:Item key="B" text="Destination 2"/>
+										<core:Item key="C" text="Destination 3"/>
+										<core:Item key="D" text="Destination 4"/>
+										<core:Item key="E" text="Destination 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Scheduled Departure -->
+								<Label id="idScheduledDateNoticedTimePicker" labelFor="idDateTimePicker" required="false" text="Scheduled Departure"/>
+								<DateTimePicker id="idScheduledDepartureNoticedDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
+
+								<!-- Actual Departure -->
+								<Label id="idActualDateNoticedTimePicker" labelFor="idDateTimePicker" required="false" text="Actual Departure"/>
+								<DateTimePicker id="idActualDepartureNoticedDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
+
+								</form:content>
+								</form:SimpleForm>
+
+								<form:SimpleForm id="newIncidentAircraftNoticed" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" columnsL="1"
+									labelSpanL="3" 
+									width="100%">
+								<form:content>
+								
+								<Label id="GSEAircraftNoticedLabel" text="Any GSE Involved?"/>
+								<CheckBox 
+									id="GSEAircraftNoticedCheckBox"
+									select="onSelectGSEAircraftNoticedCheckBox" /> 
+
+								<!-- GSE Involved -->
+							<HBox>
+									<Button
+										id="deleteGSENoticedBtn" visible="false"
+										icon="sap-icon://delete"
+										type="Reject"
+										press="onDeleteGSENoticed"
+										class="sapUiTinyMarginEnd"/> 
+								</HBox>
+
+								<!-- GSE Involved -->
+							<Label id="gseNoticedInvolvedLabel" text="GSE Noticed Occurrence" required="{appView>/data/bIsGSEInvolved}" labelFor="gseInvolvedContainer"/>
+							<VBox id="GSENoticedInvolved" visible="false" fieldGroupIds="gseInvolvedInputFilterGroup">
+								<FlexBox id="gseNoticedInvolvedInputContainer" fieldGroupIds="gseInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }"  fieldGroupIds="gseInvolvedInputFilterGroup"  
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>gseInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataGSENoticedInvolved" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentGSENoticedInvolvedNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSENoticedInvolvedNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentGSENoticedInvolvedWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentGSENoticedInvolvedWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForGSENoticedInvolved" press="_onDeleteGSEInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForGSENoticedInvolved"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>GSE'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
+	
+								<!-- GSE Belongs To -->
+								<Label text="GSE Belongs To"/>
+								<Input placeholder="Enter GSE Belongs To." id="GSENoticedBelongsTo" visible="false" />
+
+								<!-- Property Damage -->
+								<Label text="Any Property Damage"/>
+								<Input
+									placeholder="Enter property damage." id="GSENoticedAnyPropertyDamage" visible="false" />
+
+								<!-- Operator -->
+								<Label text="Operator"/>
+								<Input placeholder="Enter Operator." id="GSENoticedOperator" visible="false"/>
+
+								<Label id="GSENoticedStatementLabel" text="Operator Statement Available?"/>
+								<CheckBox 
+									id="GSENoticedStatementCheckBox"
+									select="onSelectGSENoticedStatementCheckBox" visible="false" /> 
+
+								<!-- Operator Contact Number -->
+								<Label text="Operator Contact Number"/>
+								<Input placeholder="Enter Operator Contact Number." type="Number" id="GSENoticedOperatorContactNumber" visible="false"/>
+								</form:content>
+								</form:SimpleForm>
+							
+								<HBox justifyContent="End" class="sapUiSmallMarginTop">
+									<Button
+										text="Add GSE"
+										icon="sap-icon://add"
+										type="Emphasized"
+										id="GSENoticedAddButton" visible="false"
+										press="onAddGSENoticed"/>
+
+								</HBox>
+							</VBox>
+
+							<!-- Aircraft Loading Error -->
 
 							<VBox id="aircraftLoadingErrorSection"
 								visible="{createView>/bIsaircraftLoadingError}">
 
-								<layoutData>
-									<layout:GridData  indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentAircraftLoadingErr" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Aircraft Loading Error"
+									width="100%">
+								<form:content>
 
-								<!-- Environmental Impact -->
-								<Label text="Loading Error Type"/>
-								<ComboBox width="100%">
-									<core:Item key="Misplacement" text="Misplacement of cargo"/>
-									<core:Item key="Overloading" text="Overloading"/>
-								</ComboBox>
-
-								<!-- Airline -->
-								<Label text="Airline"/>
-								<Input placeholder="Enter Airline."/>
-
-								<!-- Flight NO -->
-								<Label text="Flight Number"/>
-								<Input placeholder="Enter Flight No." type="Number" />
-
-								<!-- Aircraft Type -->
-								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
-
-								<!-- Registration -->
-								<Label text="Registration"/>
-								<Input placeholder="Enter Registration."/>
-
-								<!-- Stand No -->
-								<Label text="Stand Number"/>
-								<Input placeholder="Enter Stand No." type="Number" />
-
-								<!-- Involved Staff -->
-								<Label text="Involved Staff"/>
-								<FlexBox alignItems="Center">
-									<MultiComboBox placeholder="Select Staff"/>
-									<Button text="Add Multiple Persons"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultiplePersons"/>
-								</FlexBox>
+								<Label id="GSEAircraftLoadingLabel" text="Passenger Flown?"/>
+								<CheckBox 
+									id="GSEAircraftLoadingCheckBox"
+									select="onSelectGSEAircraftLoadingCheckBox" />
 
 								<!-- Flown / Not-Flown -->
 								<Label text="Flown/Not Flown"/>
-								<ComboBox width="100%">
+								<ComboBox width="100%" id="GSEAircraftLoadingFlown" visible="false">
 									<core:Item key="Flown" text="Flown"/>
 									<core:Item key="Not Flown" text="Not Flown"/>
 								</ComboBox>
 
 								<!-- Weight Difference -->
 								<Label text="Weight Difference"/>
-								<Input placeholder="Enter Weight Difference."/>
+								<Input placeholder="Enter Weight Difference." id="GSEAircraftLoadingWeightDifference" visible="false"/>
 
-								<!-- Origin - Destination -->
-								<Label text="Origin - Destination"/>
-								<Input placeholder="Enter Origin - Destination."/>
+								<!-- Origin -->
+								<Label text="Origin"/>
+								<Input placeholder="Enter Origin." id="GSEAircraftLoadingOrigin" visible="false"/>
 
 								<!-- Destination -->
-								<!-- <Label text="Destination"/>
-								<Input placeholder="Enter Destination."/> -->
+								<Label text="Destination"/>
+								<Input placeholder="Enter Destination." id="GSEAircraftLoadingDestination" visible="false"/>
 
 								<!-- Scheduled Dep -->
-								<Label text="Scheduled Dep"/>
-								<Input placeholder="Enter Scheduled Dep."/>
+								<Label id="idScheduledErrDateTimePicker" labelFor="idDateTimePicker" required="false" text="Scheduled Departure"/>
+								<DateTimePicker id="GSEAircraftLoadingSchedulesDep" visible="false"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
 
 								<!-- Actual Dep -->
-								<Label text="Actual Dep"/>
-								<Input placeholder="Enter Actual Dep."/>
+								<!-- <Label text="Actual Dep"/>
+								<Input placeholder="Enter Actual Dep."/> -->
 
 								<!-- GSE Involved -->
-								<Label text="GSE Involved" required="true"/>
+								<!-- <Label text="GSE Involved" required="true"/>
 								<FlexBox alignItems="Center">
 									<ComboBox id="gseInvolvedError"
 										placeholder="Select GSE Involved."
@@ -626,8 +934,82 @@
 									<Button text="Add Multiple Assets"
 										class="sapUiSmallMarginBegin"
 										press="onAddMultipleAssets"/>
-								</FlexBox>
+								</FlexBox> -->
 
+								<!-- Loading Error -->
+								<Label text="Loading Error Type" required="false" />
+								<ComboBox width="100%">
+									<core:Item key="Misplacement" text="Misplacement of cargo"/>
+									<core:Item key="Overloading" text="Overloading"/>
+								</ComboBox>
+
+								<!-- Airline Involved -->
+								<Label id="idAirlineInvolvedErr" labelFor="idAirlineInvolvedErr" required="false" text="Airline Involved"/>
+								<ComboBox id="idSelAirlineInvolvedErr" change="onAirlineInvolvedErrTypeChange" app:mandatoryErrorMessage="Please Select a Airline Involved" width="100%">
+									<items>
+										<core:Item key="A" text="Airline Involved 1"/>
+										<core:Item key="B" text="Airline Involved 2"/>
+										<core:Item key="C" text="Airline Involved 3"/>
+										<core:Item key="D" text="Airline Involved 4"/>
+										<core:Item key="E" text="Airline Involved 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Flight NO -->
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No." type="Number" />
+
+								<!-- Aircraft Type -->
+								<Label id="idAircraftErr" labelFor="idAircraftErr" required="false" text="Aircraft Type"/>
+								<ComboBox id="idSelAircraftErr" change="onAircraftErrTypeChange" app:mandatoryErrorMessage="Please Select a Aircraft Type" width="100%">
+									<items>
+										<core:Item key="A" text="Aircraft 1"/>
+										<core:Item key="B" text="Aircraft 2"/>
+										<core:Item key="C" text="Aircraft 3"/>
+										<core:Item key="D" text="Aircraft 4"/>
+										<core:Item key="E" text="Aircraft 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Registration -->
+								<Label text="Registration"/>
+								<Input placeholder="Enter Registration."/>
+
+								<!-- Stand No -->
+								<!-- <Label text="Stand No"/>
+								<Input placeholder="Enter Stand No." type="Number" /> -->
+
+								<!-- Staff Involved -->
+								<Label id="staffInvolvedErrLabel" text="Staff Involved" required="{appView>/data/bIsStaffInvolved}" labelFor="staffInvolvedErrContainer"/>
+								<VBox id="staffInvolvedErrContainer" visible="{appView>/data/bIsStaffInvolved}" fieldGroupIds="staffInvolvedInputFilterGroup">
+								<FlexBox id="staffInvolvedErrInputContainer" fieldGroupIds="staffInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="staffInvolvedErrInput" fieldGroupIds="staffInvolvedErrInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataStaffInvolvedErr" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentStaffInvolvedErrNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedErrNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentStaffInvolvedErrWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedErrWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForStaffInvolvedErr" press="_onDeleteStaffInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
+								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForStaffInvolvedErr"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>Staff'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
+
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
 
 
@@ -636,68 +1018,137 @@
 							<VBox id="boardingCheckinErrorSection"
 								visible="{createView>/bIsBoardingCheckinError}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentBoading" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Boarding / Check in Error"
+									width="100%">
+								<form:content>
+
+								<Label id="GSEBoardingErrorLabel" text="Passenger Flown?"/>
+								<CheckBox 
+									id="GSEBoardingErrorCheckBox"
+									select="onSelectGSEBoardingErrorCheckBox" /> 
 
 								<!-- Pax Flown / Not Flown -->
-								<Label text="Pax Flown / Not Flown"/>
-								<Select width="100%">
-									<core:Item key="Yes" text="Yes"/>
-									<core:Item key="No" text="No"/>
-								</Select>
+								<Label text="Pax Flown / Not Flown" required="false" />
+								<ComboBox id="GSEBoardingErrorFlown" visible="false" change="onFlownChange" app:mandatoryErrorMessage="Please Select a Pax Flown / Not Flown" width="100%">
+								<items>
+									<core:Item key="Pax" text="Pax Flown"/>
+									<core:Item key="Not" text="Not Flown"/>
+								</items>
+								</ComboBox>
 
-								<!-- Airline -->
-								<Label text="Airline"/>
-								<Input placeholder="Enter Airline."/>
+								<!-- Airline Involved -->
+								<Label id="idAirlineInvolvedBoarding" labelFor="idAirlineInvolvedBoarding" required="false" text="Airline Involved"/>
+								<ComboBox id="idSelAirlineInvolvedBoarding" change="onAirlineInvolvedBoardingTypeChange" app:mandatoryErrorMessage="Please Select a Airline Involved" width="100%">
+									<items>
+										<core:Item key="A" text="Airline Involved 1"/>
+										<core:Item key="B" text="Airline Involved 2"/>
+										<core:Item key="C" text="Airline Involved 3"/>
+										<core:Item key="D" text="Airline Involved 4"/>
+										<core:Item key="E" text="Airline Involved 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Flight No -->
-								<Label text="Flight Number"/>
-								<Input placeholder="Enter Flight Number." type="Number" />
+								<Label text="Flight No"/>
+								<Input placeholder="Enter Flight No." type="Number" />
 
 								<!-- Aircraft Type -->
-								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
+								<Label id="idAircraftType" labelFor="idAircraftType" required="false" text="Aircraft Type"/>
+								<ComboBox id="idSelAircraftType" change="onAircraftTypeTypeChange" app:mandatoryErrorMessage="Please Select a Aircraft Type" width="100%">
+									<items>
+										<core:Item key="A" text="Aircraft 1"/>
+										<core:Item key="B" text="Aircraft 2"/>
+										<core:Item key="C" text="Aircraft 3"/>
+										<core:Item key="D" text="Aircraft 4"/>
+										<core:Item key="E" text="Aircraft 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Boarding Gate No -->
-								<Label text="Boarding Gate No"/>
-								<Input placeholder="Enter Boarding Gate Number." type="Number" />
+								<!-- <Label text="Boarding Gate No"/>
+								<Input placeholder="Enter Boarding Gate No." type="Number" /> -->
 
 								<!-- Stand No -->
-								<Label text="Stand No"/>
-								<Input placeholder="Enter Stand Number." type="Number" />
+								<!-- <Label text="Stand No"/>
+								<Input placeholder="Enter Stand No." type="Number" /> -->
 
-								<!-- Involved Staff -->
-								<Label text="Involved Staff"/>
-								<FlexBox alignItems="Center">
-									<MultiComboBox
-										id="boardingInvolvedStaff"
-										placeholder="Select Involved Staff."/>
-									<Button
-										text="Add Multiple Persons"
-										class="sapUiSmallMarginBegin"
-										press="onAddMultiplePersons"/>
+								<!-- Staff Involved -->
+								<Label id="staffInvolvedBoardingLabel" text="Staff Involved" required="{appView>/data/bIsStaffInvolved}" labelFor="staffInvolvedBoardingContainer"/>
+								<VBox id="staffInvolvedBoardingContainer" visible="{appView>/data/bIsStaffInvolved}" fieldGroupIds="staffInvolvedInputFilterGroup">
+								<FlexBox id="staffInvolvedBoardingInputContainer" fieldGroupIds="staffInvolvedInputContainerGroup">
+									<Input core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="staffInvolvedBoardingInput" fieldGroupIds="staffInvolvedBoardingInputFilterGroup"
+										placeholder="{i18n>personInput}" maxLength="40" value="{PersonFullName}"
+										app:mandatoryErrorMessage="{parts: ['i18n>noPersonName', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}"
+										app:mandatoryErrorDescription="{parts: ['i18n>noPersonNameLong', 'i18n>staffInvolvedRole'], formatter: 'formatMessage'}" showValueHelp="true"
+										valueHelpRequest=".onPersonValueHelp" showSuggestion="true" startSuggestion="2" suggestionItemSelected=".onPersonSuggestionItemSelected"
+										suggest=".handlePersonSuggest" filterSuggests="false">
+										<layoutData>
+											<FlexItemData id="idGridDataStaffInvolvedBoarding" growFactor="3"/>
+										</layoutData>
+										<suggestionColumns>
+											<Column id="idColumnIncidentStaffInvolvedBoardingNameId" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedBoardingNameId" text="{i18n>personNameBPId}"/>
+											</Column>
+											<Column id="idColumnIncidentStaffInvolvedBoardingWorkAgreementId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
+												<Label id="idLabelIncidentStaffInvolvedBoardingWorkAgreementId" text="{i18n>personWorkAgreementId}"/>
+											</Column>
+										</suggestionColumns>
+									</Input>
+									<Button id="removeInputForStaffInvolvedBoarding" press="_onDeleteStaffInvolvedInput" icon="sap-icon://sys-cancel" type="Reject"
+										tooltip="{i18n>removePersonTooltip}"/>
 								</FlexBox>
+								<Button core:require="{ formatMessage: 'sap/base/strings/formatMessage' }" id="addInputForStaffInvolvedBoarding"
+									text="{parts: ['i18n>addAnotherPerson', 'i18n>Witness'], formatter: 'formatMessage'}" press="onAddInputForPerson"/>
+							</VBox>
 
-								<!-- Pax Joining / Transit -->
-								<Label text="Pax Joining / Transit"/>
-								<Select width="100%">
-									<core:Item key="Joining" text="Joining"/>
+								<!-- Passenger Joining / Transit -->
+								<Label text="Passenger Joining / Transit"/>
+								<ComboBox id="idSelPaxJoining" change="onPaxJoiningChange" app:mandatoryErrorMessage="Please Select a Passenger Joining / Transit" width="100%">
+								<items>
+									<core:Item key="Passenger" text="Passenger Joining"/>
 									<core:Item key="Transit" text="Transit"/>
-								</Select>
+								</items>
+								</ComboBox>
 
-								<!-- Origin - Destination -->
-								<Label text="Origin - Destination"/>
-								<Input placeholder="Enter Origin - Destination."/>
+								<!-- Origin -->
+								<Label id="idBoardingOrigin" labelFor="idBoardingOrigin" required="false" text="Origin"/>
+								<ComboBox id="idSelBoardingOrigin" change="onBoardingOriginTypeChange" app:mandatoryErrorMessage="Please Select a Origin" width="100%">
+									<items>
+										<core:Item key="A" text="Origin 1"/>
+										<core:Item key="B" text="Origin 2"/>
+										<core:Item key="C" text="Origin 3"/>
+										<core:Item key="D" text="Origin 4"/>
+										<core:Item key="E" text="Origin 5"/>
+									</items>
+								</ComboBox>
+
+								<!-- Destination -->
+								<Label id="idBoardingDestination" labelFor="idBoardingDestination" required="false" text="Destination"/>
+								<ComboBox id="idSelBoardingDestination" change="onBoardingDestinationTypeChange" app:mandatoryErrorMessage="Please Select a Destination" width="100%">
+									<items>
+										<core:Item key="A" text="Destination 1"/>
+										<core:Item key="B" text="Destination 2"/>
+										<core:Item key="C" text="Destination 3"/>
+										<core:Item key="D" text="Destination 4"/>
+										<core:Item key="E" text="Destination 5"/>
+									</items>
+								</ComboBox>
 
 								<!-- Scheduled Departure -->
-								<Label text="Scheduled Dep"/>
-								<Input placeholder="Enter Scheduled Departure."/>
+								<Label id="idScheduledBoardingDateTimePicker" labelFor="idDateTimePicker" required="false" text="Scheduled Departure"/>
+								<DateTimePicker id="idScheduledDepartureBoardingDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
 
 								<!-- Actual Departure -->
-								<Label text="Actual Dep"/>
-								<Input placeholder="Enter Actual Departure."/>
+								<Label id="idActualBoardingDateTimePicker" labelFor="idDateTimePicker" required="false" text="Actual Departure"/>
+								<DateTimePicker id="idActualDepartureBoardingDateTimePicker"
+								value="{path:'IncidentUTCDateTime', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'medium/short', strictParsing: true}}"
+								app:mandatoryErrorMessage="{i18n>invalidDateTime}" change="onChangeDateTime" placeholder="{i18n>dateTimeInput}"/>
 
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
 
 							<!-- HSR Drop Downs Items -->
@@ -707,46 +1158,53 @@
 							<VBox id="InjuredSickStaffDetailsSection"
 								visible="{createView>/bIsInjuredSickStaffDetails}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentInjured" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Injured / Sick Staff Details"
+									width="100%">
+								<form:content>
 
 								<!-- Causality Type -->
 								<Label text="Causality Type"/>
-								<Select width="100%">
+								<ComboBox id="idSelCausalityType" change="onCausalityTypeChange" app:mandatoryErrorMessage="Please Select a Causality Type" width="100%">
+								<items>
 									<core:Item key="Primary" text="Primary"/>
 									<core:Item key="Secondary" text="Secondary"/>
-								</Select>
+								</items>
+								</ComboBox>
 
 								<!-- Nature of Injury/Illness -->
 								<Label text="Nature of Injury / Illness"/>
-								<Select width="100%">
+								<ComboBox id="idSelNature" change="onNatureChange" app:mandatoryErrorMessage="Please Select a Nature of Injury / Illness" width="100%">
+								<items>
 									<core:Item key="Injury" text="Injury"/>
 									<core:Item key="Illness" text="Illness"/>
-								</Select>
+								</items>
+								</ComboBox>
 
 								<!-- Injured Staff Company Name -->
 								<Label text="Injured Staff Company Name"/>
 								<Input placeholder="Enter Injured Staff Company Name."/>
 
 								<!-- Injured / Sick Staff Belongs to -->
-								<Label text="Injured / Sick Staff Belongs to"/>
-								<Select width="100%">
-									<core:Item key="Injury" text="Injury"/>
-									<core:Item key="Sick" text="Sick"/>
-								</Select>
+								<Label text="Injured / Sick Staff Belongs to"/>								
+								<ComboBox id="idSelInjury" change="onInjuryChange" app:mandatoryErrorMessage="Please Select a Injury / Sick Staff Belongs to" width="100%">
+								<items>
+									<core:Item key="Injury" text="Injury Staff"/>
+									<core:Item key="Sick" text="Sick Staff"/>
+								</items>
+								</ComboBox>
 
 								<!-- Body Parts Affected -->
 								<Label text="Body Parts Affected"/>
 								<Input placeholder="Enter Body Parts Affected."/>
 
 								<!-- IP Staff No -->
-								<Label text="IP Staff Number"/>
-								<Input placeholder="Enter Staff Number." type="Number"/>
+								<Label text="IP Staff No"/>
+								<Input placeholder="Enter Staff No." type="Number"/>
 
 								<!-- IP Mobile No -->
-								<Label text="IP Mobile Number"/>
-								<Input placeholder="Enter IP Mobile Number." type="Tel" maxLength="10"/>
+								<Label text="IP Mobile No"/>
+								<Input placeholder="Enter IP Mobile No." type="Tel" maxLength="10"/>
 
 								<!-- IP Email Address -->
 								<Label text="IP Email Address"/>
@@ -764,44 +1222,55 @@
 										<RadioButton id="moreRadioButtonNo" text="No" ariaLabelledBy="moreRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
+								</form:content>
+								</form:SimpleForm>
 
 								<VBox id="idMore" visible="false">
-								<!-- Causality Type -->
+								<form:SimpleForm id="newIncidentSick" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+								labelSpanL="3" emptySpanL="4" width="100%">
+								<form:content>
+
 								<Label text="Causality Type"/>
-								<Select width="100%">
+								<ComboBox id="idSelCausality" change="onCausalityChange" app:mandatoryErrorMessage="Please Select a Causality Type" width="100%">
+								<items>
 									<core:Item key="Primary" text="Primary"/>
 									<core:Item key="Secondary" text="Secondary"/>
-								</Select>
+								</items>
+								</ComboBox>
 
 								<!-- Nature of Injury/Illness -->
 								<Label text="Nature of Injury / Illness"/>
-								<Select width="100%">
+								<ComboBox id="idSelIllness" change="onIllnessChange" app:mandatoryErrorMessage="Please Select a Nature of Injury / Illness" width="100%">
+								<items>
 									<core:Item key="Injury" text="Injury"/>
 									<core:Item key="Illness" text="Illness"/>
-								</Select>
+								</items>
+								</ComboBox>
 
 								<!-- Injured Staff Company Name -->
 								<Label text="Injured Staff Company Name"/>
 								<Input placeholder="Enter Injured Staff Company Name."/>
 
 								<!-- Injured / Sick Staff Belongs to -->
-								<Label text="Injured / Sick Staff Belongs to"/>
-								<Select width="100%">
-									<core:Item key="Injury" text="Injury"/>
-									<core:Item key="Sick" text="Sick"/>
-								</Select>
+								<Label text="Injured / Sick Staff Belongs to"/>								
+								<ComboBox id="idSelSick" change="onSickChange" app:mandatoryErrorMessage="Please Select a Injury / Sick Staff Belongs to" width="100%">
+								<items>
+									<core:Item key="Injury" text="Injury Staff"/>
+									<core:Item key="Sick" text="Sick Staff"/>
+								</items>
+								</ComboBox>
 
 								<!-- Body Parts Affected -->
 								<Label text="Body Parts Affected"/>
 								<Input placeholder="Enter Body Parts Affected."/>
 
 								<!-- IP Staff No -->
-								<Label text="IP Staff Number"/>
-								<Input placeholder="Enter Staff Number." type="Number"/>
+								<Label text="IP Staff No"/>
+								<Input placeholder="Enter Staff No." type="Number"/>
 
 								<!-- IP Mobile No -->
-								<Label text="IP Mobile Number"/>
-								<Input placeholder="Enter IP Mobile Number." type="Tel" maxLength="10"/>
+								<Label text="IP Mobile No"/>
+								<Input placeholder="Enter IP Mobile No." type="Tel" maxLength="10"/>
 
 								<!-- IP Email Address -->
 								<Label text="IP Email Address"/>
@@ -810,8 +1279,9 @@
 								<!-- Detailed Description of Incient Location -->
 								<Label text="Detailed Description of Incient Location"/>
 								<TextArea placeholder="Enter Detailed Description of Incient Location." rows="3" width="100%" />
-								</VBox>
-								
+								</form:content>
+								</form:SimpleForm>
+								</VBox>								
 							</VBox>
 
 							<!-- Post Incident Action -->
@@ -819,9 +1289,10 @@
 							<VBox id="PostIncidentActionSection"
 								visible="{createView>/bIsPostIncidentAction}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentPost" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Post Incident"
+									width="100%">
+								<form:content>
 
 								<!-- Line Manager Notified -->
 								<Label text="Line Manager Notified"/>
@@ -833,10 +1304,8 @@
 								</RadioButtonGroup>
 
 								<!-- Line Manager Name -->
-								<VBox id="idLineManagerName" visible="false">
-								<Label text="Line Manager Name"/>
-								<Input placeholder="Enter Line Manager Name."/>
-								</VBox>
+								<Label text="Line Manager Name" />
+								<Input placeholder="Enter Line Manager Name." id="idLineManagerName" visible="false"/>
 
 								<!-- First AID Provided -->
 								<Label text="First AID Provided?"/>
@@ -848,10 +1317,8 @@
 								</RadioButtonGroup>
 
 								<!-- First AID Provided Name -->
-								<VBox id="idFirstAIDProvidedName" visible="false">
 								<Label text="First AID Provided Name"/>
-								<Input placeholder="Enter First AID Provided Name."/>
-								</VBox>
+								<Input placeholder="Enter First AID Provided Name." id="idFirstAIDProvidedName" visible="false"/>
 								
 								<!-- Ambulance Service Involved -->
 								<Label text="Ambulance Service Involved"/>
@@ -879,7 +1346,8 @@
 										<RadioButton id="externalRadioButtonNo" text="No" ariaLabelledBy="externalRadioButtonLabel" selected="true" />
 									</buttons>
 								</RadioButtonGroup>
-								
+								</form:content>
+								</form:SimpleForm>								
 							</VBox>
 
 							<!-- Incident Witness Type -->
@@ -887,9 +1355,10 @@
 							<VBox id="IncidentWitnessTypeSection"
 								visible="{createView>/bIsIncidentWitnessType}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentWitness" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Incident Witness"
+									width="100%">
+								<form:content>
 
 								<!-- Witness Name -->
 								<Label text="Witness Name"/>
@@ -908,13 +1377,15 @@
 								<Input placeholder="Enter Witness Contact Number." type="Number" />
 
 								<!-- Witness Statement Attached -->
-								<Label id="witnessStatementAttached" text="Witness Statement Attached"/>
-							<RadioButtonGroup id="witnessstatementRadioButton" ariaLabelledBy="witnessRadioButtonLabel" columns="2" select="onSelectwitnessRadioButton">
-								<buttons>
-									<RadioButton id="witnessstatementRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="witnessRadioButtonLabel"/>
-									<RadioButton id="witnessstatementRadioButtonNo" text="No" ariaLabelledBy="witnessRadioButtonLabel" selected="true" />
-								</buttons>
-							</RadioButtonGroup>
+								<!-- <Label id="witnessStatementAttached" text="Witness Statement Attached"/>
+									<RadioButtonGroup id="witnessstatementRadioButton" ariaLabelledBy="witnessRadioButtonLabel" columns="2" select="onSelectwitnessRadioButton">
+										<buttons>
+											<RadioButton id="witnessstatementRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="witnessRadioButtonLabel"/>
+											<RadioButton id="witnessstatementRadioButtonNo" text="No" ariaLabelledBy="witnessRadioButtonLabel" selected="true" />
+										</buttons>
+									</RadioButtonGroup> -->
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
 
 							<!-- Any GSE Involvement in Injury Case -->
@@ -922,9 +1393,10 @@
 							<VBox id="AnyGSEInvolvementinInjuryCaseSection"
 								visible="{createView>/bIsAnyGSEInvolvementinInjuryCase}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentGSE" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="Any GSE Involvement"
+									width="100%">
+								<form:content>
 
 								<!-- GSE 1 Involved -->
 								<Label text="GSE 1 Involved"/>
@@ -961,21 +1433,6 @@
 								<!-- Location -->
 
 								<Label id="idLabelLocation" labelFor="idLocation" text="Location"/>
-								<!-- <Input id="idLocation" placeholder="Enter Location." showValueHelp="true" value="{appView>/data/sLocationName}"
-									showSuggestion="true" startSuggestion="2" suggestionItemSelected="._onSuggestionItemSelected" suggest=".handleLocationSuggest"
-									filterSuggests="false">
-									<suggestionColumns>
-										<Column id="idColumnLocationName" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-											<Label id="idLabelLocationName" text="{/#C_EHSLocationValueHelpType/EHSLocationName/@sap:label}"/>
-										</Column>
-										<Column id="idColumnLocationId" hAlign="Center" popinDisplay="Inline" demandPopin="true">
-											<Label id="idLabelLocationId" text="{/#C_EHSLocationValueHelpType/EHSLocationID/@sap:label}"/>
-										</Column>
-										<Column id="idColumnLocationType" hAlign="Begin" popinDisplay="Inline" demandPopin="true">
-											<Label id="idLabelLocationType" text="{/#C_EHSLocationValueHelpType/EHSLocationType/@sap:label}"/>
-										</Column>
-									</suggestionColumns>
-								</Input> -->
 								<ComboBox id="idSelLocation" change="onLocationChange" app:mandatoryErrorMessage="Please Select a Location" width="100%">
 								<items>
 									<core:Item key="A" text="MDU"/>
@@ -999,13 +1456,11 @@
 									</buttons>
 								</RadioButtonGroup>
 
-								<!-- Operator Contact Number -->
-								<VBox id="idoperatorInp"  visible="false" >
+								<!-- Operator Contact No -->
 								<Label text="Operator Contact Number"/>
-								<Input placeholder="Operator Contact Number." type="Number" />
-								</VBox>
-								
-								
+								<Input placeholder="Operator Contact No." type="Number" id="idoperatorInp"  visible="false" />
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
 
 							<Label text="" />
@@ -1015,33 +1470,47 @@
 							<VBox id="DGORSection"
 								visible="{createView>/bIsDGOR}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentDGOR" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="DGOR Incident"
+									width="100%">
+								<form:content>
 
 								<!-- Airline -->
 								<Label text="Airline"/>
-								<Input placeholder="Enter Airline."/>
+								<ComboBox id="idSelDGORAirline" change="onAirlineChange" app:mandatoryErrorMessage="Please Select a Airline" width="100%">
+								<items>
+									<core:Item key="A" text="Airline 1"/>
+									<core:Item key="B" text="Airline 2"/>
+								</items>
+								</ComboBox>
 
 								<!-- Flight Date -->
-								<Label text="Flight Date"/>
-								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date."/>
+								<Label text="Flight Date and Time"/>
+								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date and Time."/>
 
 								<!-- Flight Number -->
 								<Label text="Flight Number"/>
 								<Input placeholder="Enter Flight Number." type="Number" />
 
-								<!-- Aircraft Registration -->
-								<Label text="Aircraft Registration"/>
-								<Input placeholder="Enter Aircraft Registration." />
-
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
+								<ComboBox id="idSelDGORAircraftType" change="onAircraftTypeChange" app:mandatoryErrorMessage="Please Select a Aircraft Type" width="100%">
+								<items>
+									<core:Item key="A" text="Type 1"/>
+									<core:Item key="B" text="Type 2"/>
+									<core:Item key="C" text="Type 3"/>
+									<core:Item key="D" text="Type 4"/>
+									<core:Item key="E" text="Type 5"/>
+								</items>
+								</ComboBox>
+
+								<!-- Aircraft Registration -->
+								<Label text="Registration"/>
+								<Input placeholder="Enter Registration." />
 								
 								<!-- Origin Airport -->
-								<Label id="originAirportLabel" text="OriginAirport"/>
-								<ComboBox id="idSelOriginAirport" change="onOriginAirportChange" app:mandatoryErrorMessage="Please Select a Origin Airport" width="100%">
+								<Label id="originAirportLabel" text="Origin"/>
+								<ComboBox id="idSelOriginAirport" change="onOriginAirportChange" app:mandatoryErrorMessage="Please Select a Origin" width="100%">
 								<items>
 									<core:Item key="A" text="JFK"/>
 									<core:Item key="B" text="LON"/>
@@ -1052,8 +1521,8 @@
 								</ComboBox>
 
 								<!-- Destination Airport -->
-								<Label id="destinationAirportLabel" text="Destination Airport"/>
-								<ComboBox id="idSelDestinationAirport" change="onDestinationAirportChange" app:mandatoryErrorMessage="Please Select a Destination Airport" width="100%">
+								<Label id="destinationAirportLabel" text="Destination"/>
+								<ComboBox id="idSelDestinationAirport" change="onDestinationAirportChange" app:mandatoryErrorMessage="Please Select a Destination" width="100%">
 								<items>
 									<core:Item key="A" text="INR"/>
 									<core:Item key="B" text="FRE"/>
@@ -1071,10 +1540,6 @@
 								<Label text="Proper Shipping Name"/>
 								<Input placeholder="Enter Proper Shipping Name." />
 
-								<!-- UN/ID Number -->
-								<Label text="UN/ID Number"/>
-								<Input placeholder="Enter UN/ID Number." type="Number" />
-
 								<!-- Class/Division -->
 								<Label id="classLabel" text="Class / Division"/>
 								<ComboBox id="idSelClass" change="onClassChange" app:mandatoryErrorMessage="Please Select a Class/Division" width="100%">
@@ -1083,6 +1548,10 @@
 									<core:Item key="B" text="Division"/>
 								</items>
 								</ComboBox>
+
+								<!-- UN/ID Number -->
+								<Label text="UN/ID Number"/>
+								<Input placeholder="Enter UN/ID Number." type="Number" />
 
 								<!-- Subsidiary Hazards -->
 								<Label id="subsidiaryHazardsLabel" text="Subsidiary Hazards"/>
@@ -1103,7 +1572,7 @@
 								</ComboBox>
 
 								<!-- Category -->
-								<Label id="categoryLabel" text="Category (Class 7 Only)"/>
+								<Label id="categoryLabel" text="Category"/>
 								<ComboBox id="idSelCategory" change="onCategoryChange" app:mandatoryErrorMessage="Please Select a Category" width="100%">
 								<items>
 									<core:Item key="A" text="Category 1"/>
@@ -1115,46 +1584,54 @@
 								<Label text="Type of Packaging"/>
 								<Input placeholder="Enter Type of Packaging." />
 
-								<!-- Packaging Specification Marking -->
-								<Label text="Packaging Specification Marking"/>
-								<Input placeholder="Packaging Specification Marking." />
+								<!-- Packaging Specification -->
+								<Label text="Packaging Specification"/>
+								<Input placeholder="Enter Packaging Specification." />
 
 								
 								<!-- Number of Packages -->
-								<Label text="Number of Packages"/>
-								<Input placeholder="Number of Packages." type="Number" />
+								<Label text="No of Packages"/>
+								<Input placeholder="Enter No of Packages." type="Number" />
 
 								<!-- Quantity -->
-								<Label text="Quantity (Transport Index, If Applicable)"/>
-								<Input placeholder="Quantity."/>
+								<Label text="Quantity"/>
+								<Input placeholder="Enter Quantity."/>
 
 								<!-- Air Waybill Reference Number -->
 								<Label text="Air Waybill Reference Number"/>
-								<Input placeholder="Air Waybill Reference Number." type="Number" />
+								<Input placeholder="Enter Air Waybill Reference Number." type="Number" />
 
 								<!-- Courier Pouch / Baggage Tag / Passenger Ticket Number -->
 								<Label text="Courier Pouch / Baggage Tag / Passenger Ticket Number"/>
-								<Input placeholder="Courier Pouch / Baggage Tag / Passenger Ticket Number." type="Number" />
+								<Input placeholder="Enter Courier Pouch / Baggage Tag / Passenger Ticket Number." type="Number" />
 
 								<!-- Name and Address of Shipper/ Agent / Passenger -->
 								<Label text="Name and Address of Shipper/ Agent / Passenger"/>
-								<Input placeholder="Name and Address of Shipper/ Agent / Passenger."/>
+								<Input placeholder="Enter Name and Address of Shipper/ Agent / Passenger."/>
 
 								<!-- Packaging Ok -->
 								<Label text="Packaging Ok?"/>
-								<Input placeholder="Packaging Ok."/>
+								<CheckBox 
+									id="packagingCheckBox"
+									select="onSelectpackagingCheckBox" /> 
 
 								<!-- Properly Secure -->
 								<Label text="Properly Secure"/>
-								<Input placeholder="Properly Secure."/>
+								<CheckBox 
+									id="properlySecureCheckBox"
+									select="onSelectproperlySecureCheckBox" /> 
 
 								<!-- Leakage -->
 								<Label text="Leakage"/>
-								<Input placeholder="Leakage."/>
+								<CheckBox 
+									id="LeakageCheckBox"
+									select="onSelectLeakageCheckBox" /> 
 
 								<!-- DGR Declaration Available -->
 								<Label text="DGR Declaration Available"/>
-								<Input placeholder="DGR Declaration Available."/>
+								<CheckBox 
+									id="DGRDeclarationAvailableCheckBox"
+									select="onSelectDGRDeclarationAvailableCheckBox" /> 
 
 								<!-- Ground Phase of Event -->
 								<Label id="groundLabel" text="Ground Phase of Event"/>
@@ -1163,18 +1640,19 @@
 									<core:Item key="A" text="Ground 1"/>
 									<core:Item key="B" text="Ground 2"/>
 								</items>
-								</ComboBox>
-
+								</ComboBox>								
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
 
 							<!-- SOR -->
 
-							<VBox id="SORSection"
-								visible="{createView>/bIsSOR}">
+							<VBox id="SORSection" visible="{createView>/bIsSOR}">
 
-								<layoutData>
-									<layout:GridData indent="L4 M4 S0" span="L4 M7 S12"/>
-								</layoutData>
+								<form:SimpleForm id="newIncidentSOR" editable="true" layout="ResponsiveGridLayout" columnsM="1" labelSpanM="4" emptySpanM="1" columnsL="1"
+									labelSpanL="3" emptySpanL="4" title="SOR Incident"  
+									width="100%">
+								<form:content>
 
 								<!-- Threat Type -->
 								<Label id="threatTypeLabel" text="Threat Type"/>
@@ -1186,7 +1664,7 @@
 									<core:Item key="D" text="Type 4"/>
 									<core:Item key="E" text="Type 5"/>
 								</items>
-							</ComboBox>
+								</ComboBox>
 
 								<!-- Threat Sub-Type -->
 								<Label id="threatSubTypeLabel" text="Threat Sub-Type"/>
@@ -1198,21 +1676,29 @@
 									<core:Item key="D" text="Sub-Type 4"/>
 									<core:Item key="E" text="Sub-Type 5"/>
 								</items>
-							</ComboBox>
+								</ComboBox>
 
 								<!-- Was an Aircraft Involved -->
-								<Label id="aircraftInvolvedLabel" text="Was an Aircraft Involved"/>
-								<RadioButtonGroup id="aircraftInvolvedRadioButton" ariaLabelledBy="aircraftInvolvedRadioButtonLabel" columns="2" select="onSelectaircraftInvolvedRadioButton">
+								<!--<RadioButtonGroup id="aircraftInvolvedRadioButton" ariaLabelledBy="aircraftInvolvedRadioButtonLabel" columns="2" select="onSelectaircraftInvolvedRadioButton">
 									<buttons>
 										<RadioButton id="aircraftInvolvedRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="aircraftInvolvedRadioButtonLabel"/>
 										<RadioButton id="aircraftInvolvedRadioButtonNo" text="No" ariaLabelledBy="aircraftInvolvedRadioButtonLabel" selected="true" />
 									</buttons>
-								</RadioButtonGroup>
+								</RadioButtonGroup> -->
+													
+								<Label id="aircraftInvolvedLabel" text="Was an Aircraft Involved?"/>
+								<CheckBox 
+									id="aircraftInvolvedCheckBox"
+									select="onSelectAircraftInvolvedCheckBox" /> 
 
-								<VBox id="SORAircraftInvolved" visible="false">
+								<!-- <VBox id="SORAircraftInvolved" visible="false">
+								<layoutData>
+									<layout:GridData id="idGridDataAircraftInvolved" span="L4 M7 S12"/>
+								</layoutData> -->
+								
 								<!-- Airline -->
 								<Label text="Airline"/>
-								<ComboBox id="idSelAirline" change="onAirlineChange" app:mandatoryErrorMessage="Please Select a Airline" width="100%">
+								<ComboBox id="SORAirline" visible="false" change="onAirlineChange" app:mandatoryErrorMessage="Please Select a Airline" width="100%">
 								<items>
 									<core:Item key="A" text="Airline 1"/>
 									<core:Item key="B" text="Airline 2"/>
@@ -1221,76 +1707,66 @@
 
 								<!-- Flight Date -->
 								<Label text="Flight Date"/>
-								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date."/>
+								<DatePicker app:mandatoryErrorMessage="{i18n>invalidDateTime}" placeholder="Enter Flight Date." id="SORFlight" visible="false" />
 								
 								<!-- Flight Number -->
 								<Label text="Flight Number"/>
-								<Input placeholder="Enter Flight Number." type="Number"/>
+								<Input placeholder="Enter Flight Number." type="Number" id="SORFlightNo" visible="false" /> 
 
 								<!-- Aircraft Registration -->
 								<Label text="Aircraft Registration"/>
-								<Input placeholder="Enter Aircraft Registration." />
+								<Input placeholder="Enter Aircraft Registration." id="SORAircraftRegistration" visible="false" />
 
 								<!-- Aircraft Type -->
 								<Label text="Aircraft Type"/>
-								<Input placeholder="Enter Aircraft Type."/>
+								<Input placeholder="Enter Aircraft Type." id="SORAircraftType" visible="false" />
 
 								<!-- Stand -->
 								<Label text="Stand"/>
-								<Input placeholder="Enter Stand."/>
-								
-								</VBox>
+								<Input placeholder="Enter Stand." id="SORStand" visible="false" />		
+								<!-- </VBox> -->
 
-								
 								<!-- Was a Passenger Involved -->
-								<Label id="passengerInvolvedLabel" text="Was a Passenger Involved" />
-								<RadioButtonGroup id="passengerInvolvedRadioButton" ariaLabelledBy="passengerInvolvedRadioButtonLabel" columns="2" select="onSelectpassengerInvolvedRadioButton">
+								<!-- <RadioButtonGroup id="passengerInvolvedRadioButton" ariaLabelledBy="passengerInvolvedRadioButtonLabel" columns="2" select="onSelectpassengerInvolvedRadioButton">
 									<buttons>
 										<RadioButton id="passengerInvolvedRadioButtonYes" class="sapUiMediumMarginEnd" text="Yes" ariaLabelledBy="passengerInvolvedRadioButtonLabel"/>
 										<RadioButton id="passengerInvolvedRadioButtonNo" text="No" ariaLabelledBy="passengerInvolvedRadioButtonLabel" selected="true"/>
 									</buttons>
-								</RadioButtonGroup>
+								</RadioButtonGroup>  -->
+								<Label id="passengerInvolvedLabel" text="Was a Passenger Involved?" /> 
+								<CheckBox 
+									id="passengerInvolvedCheckBox"
+									select="onSelectpassengerInvolvedCheckBox" />							
 
-								<VBox id="SORPassengerInvolved" visible="false"> 
-
+								<!-- <VBox id="SORPassengerInvolved" visible="false"> 
+								<layoutData>
+									<layout:GridData id="idGridDataPassengerInvolved" span="L4 M7 S12"/>
+								</layoutData> -->
 								<!-- Pax Name -->
 								<Label text="Pax Name"/>
-								<Input placeholder="Enter Pax Name." />
+								<Input placeholder="Enter Pax Name." id="SORPaxName" visible="false" />
 
 								<!-- Pax Nationality -->
 								<Label text="Pax Nationality"/>
-								<Input placeholder="Enter Pax Nationality." />
+								<Input placeholder="Enter Pax Nationality." id="SORPaxNationality" visible="false" />
 
 								<!-- Seat Number -->
 								<Label text="Seat Number"/>
-								<Input placeholder="Enter Seat Number." type="Number"/>
+								<Input placeholder="Enter Seat Number." id="SORSeatNumber" visible="false" type="Number"/>
 
 								<!-- Pax Contact -->
 								<Label text="Pax Contact"/>
-								<Input placeholder="Enter Pax Contact." />
+								<Input placeholder="Enter Pax Contact." id="SORPaxContact" visible="false" />
 
 								<!-- Gate -->
 								<Label text="Gate"/>
-								<Input placeholder="Enter Gate." />
-
-								</VBox>
-
+								<Input placeholder="Enter Gate." id="SORGate" visible="false" />
+								<!-- </VBox> -->
+								</form:content>
+								</form:SimpleForm>
 							</VBox>
+				</VBox>
 
-							<!-- Occurrence Classification -->
-							<Label id="idOccurrenceClassification" labelFor="idOccurrenceClassification" required="false" text="Occurrence Classification"/>
-							<ComboBox id="idSelOccurrenceClassification" change="onOccurrenceTypeChange" app:mandatoryErrorMessage="Please Select a Occurrence Classification" width="100%">
-								<items>
-									<core:Item key="A" text="A"/>
-									<core:Item key="B" text="B"/>
-									<core:Item key="C" text="C"/>
-									<core:Item key="D" text="D"/>
-									<core:Item key="E" text="E"/>
-								</items>
-							</ComboBox>
-
-						</form:content>
-					</form:SimpleForm>
 				</layout:content>
 			</layout:VerticalLayout>
 		</semantic:content>
